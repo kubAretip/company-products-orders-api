@@ -1,0 +1,20 @@
+version: '3.8'
+
+volumes:
+  db_data:
+    name: cpo_vol
+    driver: local
+
+services:
+  mysql:
+    container_name: cpo_mysql
+    image: library/mysql:8.0.22
+    environment:
+      - MYSQL_DATABASE=cpo
+      - MYSQL_USER=cpo
+      - MYSQL_PASSWORD=cpo
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - 3311:3306
+    volumes:
+      - db_data:/var/lib/mysql
