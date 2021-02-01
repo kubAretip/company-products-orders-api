@@ -1,1 +1,21 @@
-
+server:
+  port: 8080
+  address: 127.0.0.1
+  servlet:
+    context-path: /api
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3311/cpo?createDatabaseIfNotExist=true&serverTimezone=UTC
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  profiles:
+    active: dev
+  logging:
+    level:
+      pl:
+        kubaretip:
+          cpo:
+            api: debug
