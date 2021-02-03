@@ -22,7 +22,7 @@ public class User {
     @Column(unique = true, nullable = false, length = 100)
     private String username;
 
-    @Column(nullable = false, length = 60)
+    @Column(length = 60)
     private String password;
 
     @Column(unique = true, nullable = false, length = 100)
@@ -40,7 +40,7 @@ public class User {
     @Column(nullable = false)
     private Boolean activated = false;
 
-    @Column(name = "activation_key", length = 124)
+    @Column(name = "activation_key", length = 60)
     private String activationKey;
 
     @ManyToMany

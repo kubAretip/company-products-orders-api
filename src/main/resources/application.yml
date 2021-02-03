@@ -13,9 +13,9 @@ spring:
       ddl-auto: none
   profiles:
     active: dev
-  logging:
-    level:
-      pl:
-        kubaretip:
-          cpo:
-            api: debug
+logging:
+  level:
+    pl:
+      kubaretip:
+        cpo:
+          api: debug
