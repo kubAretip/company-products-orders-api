@@ -1,0 +1,49 @@
+package pl.kubaretip.cpo.api.exception.handler;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import pl.kubaretip.cpo.api.exception.model.Error;
+import pl.kubaretip.cpo.api.exception.model.ValidationError;
+
+import java.util.*;
+
+@RestControllerAdvice
+public class ValidationRestExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  HttpHeaders headers, HttpStatus status,
+                                                                  WebRequest request) {
+
+        Set<ValidationError> validationErrors = new HashSet<>();
+        ex.getFieldErrors()
+                .forEach(fieldError -> validationErrors.stream()
+                        .filter(validationError -> validationError.getField().equals(fieldError.getField()))
+                        .findAny()
+                        .ifPresentOrElse(validationError -> {
+                                    validationError.getMessage().add(fieldError.getDefaultMessage());
+                                },
+                                () -> {
+                                    validationErrors.add(new ValidationError(fieldError.getField(),
+                                            new ArrayList<>(Collections.singletonList(fieldError.getDefaultMessage())))
+                                    );
+                                }
+                        )
+                );
+
+        var error = Error.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .title("Validation failed")
+                .validationErrors(validationErrors)
+                .build();
+
+        return ResponseEntity.badRequest().body(error);
+    }
+
+
+}

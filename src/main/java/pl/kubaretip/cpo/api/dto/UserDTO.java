@@ -17,19 +17,19 @@ public class UserDTO {
     private Long id;
     private String username;
 
-    @NotBlank
-    @Size(min = 1, max = 50)
-    @Pattern(regexp = "[a-zA-Z]+")
+    @NotBlank(message = "{validation.user.firstName.notBlank.message}")
+    @Size(min = 1, max = 50, message = "{validation.user.firstName.size.message}")
+    @Pattern(regexp = "[a-zA-Z]+", message = "{validation.user.firstName.onlyLetters.message}")
     private String firstName;
 
-    @NotBlank
-    @Size(min = 1, max = 50)
-    @Pattern(regexp = "[a-zA-Z]+")
+    @NotBlank(message = "{validation.user.lastName.notBlank.message}")
+    @Size(min = 1, max = 50, message = "{validation.user.lastName.size.message}")
+    @Pattern(regexp = "[a-zA-Z]+", message = "{validation.user.lastName.onlyLetters.message}")
     private String lastName;
 
-    @Email
-    @NotBlank
-    @Size(max = 100)
+    @Email(message = "{validation.user.email.incorrect.message}")
+    @NotBlank(message = "{validation.user.email.notBlank.message}")
+    @Size(max = 100, message = "{validation.user.email.size.max.message}")
     private String email;
 
     private PhoneCountryCodeDTO phoneCountryCode;
