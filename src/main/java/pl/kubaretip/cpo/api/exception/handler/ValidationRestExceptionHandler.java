@@ -9,11 +9,21 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import pl.kubaretip.cpo.api.exception.model.Error;
 import pl.kubaretip.cpo.api.exception.model.ValidationError;
+import pl.kubaretip.cpo.api.util.Translator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @RestControllerAdvice
 public class ValidationRestExceptionHandler extends ResponseEntityExceptionHandler {
+
+    private final Translator translator;
+
+    public ValidationRestExceptionHandler(Translator translator) {
+        this.translator = translator;
+    }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
@@ -38,7 +48,7 @@ public class ValidationRestExceptionHandler extends ResponseEntityExceptionHandl
 
         var error = Error.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
-                .title("Validation failed")
+                .title(translator.translate("common.validation.incorrect.title"))
                 .validationErrors(validationErrors)
                 .build();
 
