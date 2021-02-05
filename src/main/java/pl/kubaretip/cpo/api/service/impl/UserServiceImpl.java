@@ -5,22 +5,20 @@ import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 import pl.kubaretip.cpo.api.domain.User;
 import pl.kubaretip.cpo.api.dto.UserDTO;
 import pl.kubaretip.cpo.api.dto.mapper.UserMapper;
 import pl.kubaretip.cpo.api.exception.AlreadyExistsException;
 import pl.kubaretip.cpo.api.exception.AuthorityNotExistsException;
+import pl.kubaretip.cpo.api.exception.InvalidDataException;
+import pl.kubaretip.cpo.api.exception.NotFoundException;
 import pl.kubaretip.cpo.api.repository.AuthorityRepository;
 import pl.kubaretip.cpo.api.repository.UserRepository;
 import pl.kubaretip.cpo.api.security.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.service.UserService;
 
-import javax.validation.Valid;
-
 @Slf4j
 @Service
-@Validated
 class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -39,7 +37,7 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO createUser(@Valid UserDTO userDTO) {
+    public UserDTO createUser(UserDTO userDTO) {
 
         log.debug("Creating new user");
         if (userRepository.existsByEmailIgnoreCase(userDTO.getEmail())) {
@@ -79,5 +77,26 @@ class UserServiceImpl implements UserService {
         userRepository.save(user);
         // TODO send mail with activation key
         return userMapper.mapToDTO(user);
+    }
+
+    @Override
+    public UserDTO activateUser(String username, String password, String activationKey) {
+
+        var user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException("User not found", "User " + username + " not exists"));
+
+        if (user.getActivated()) {
+            throw new InvalidDataException("Activation error", "The account has already been activated");
+        }
+
+        if (passwordEncoder.matches(activationKey, user.getActivationKey())) {
+            user.setActivationKey(null);
+            user.setPassword(passwordEncoder.encode(password));
+            user.setActivated(true);
+            userRepository.save(user);
+            return userMapper.mapToDTO(user);
+        } else {
+            throw new InvalidDataException("Incorrect activation key", "Your activation key is incorrect");
+        }
     }
 }

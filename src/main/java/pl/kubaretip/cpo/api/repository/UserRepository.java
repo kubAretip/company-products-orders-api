@@ -17,4 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             nativeQuery = true)
     Optional<User> findLatestUsernameForFirstNameAndLastName(@Param("firstName") String firstName,
                                                              @Param("lastName") String lastName);
+
+    Optional<User> findByUsername(String username);
+
 }

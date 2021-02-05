@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import pl.kubaretip.cpo.api.exception.AlreadyExistsException;
 import pl.kubaretip.cpo.api.exception.AuthorityNotExistsException;
+import pl.kubaretip.cpo.api.exception.InvalidDataException;
+import pl.kubaretip.cpo.api.exception.NotFoundException;
 import pl.kubaretip.cpo.api.exception.model.Error;
 
 @RestControllerAdvice
@@ -25,9 +27,28 @@ public class BusinessLogicExceptionHandler {
     @ExceptionHandler(AuthorityNotExistsException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Error handleAuthorityNotExistsException(AuthorityNotExistsException ex, WebRequest request) {
-
         return Error.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .detail(ex.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Error handleNotFoundException(NotFoundException ex, WebRequest request) {
+        return Error.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .title(ex.getTitle())
+                .detail(ex.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(InvalidDataException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Error handleInvalidDataException(InvalidDataException ex, WebRequest request) {
+        return Error.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .title(ex.getTitle())
                 .detail(ex.getMessage())
                 .build();
     }

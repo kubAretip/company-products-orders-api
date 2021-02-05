@@ -1,13 +1,11 @@
 package pl.kubaretip.cpo.api.web.rest;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.kubaretip.cpo.api.dto.UserDTO;
 import pl.kubaretip.cpo.api.service.UserService;
+import pl.kubaretip.cpo.api.web.rest.vm.UserActivationVM;
 
 import javax.validation.Valid;
 
@@ -30,5 +28,11 @@ public class UserController {
         return ResponseEntity.created(locationURI).body(newUser);
     }
 
+    @PatchMapping("/activate")
+    public ResponseEntity<UserDTO> activateUser(@Valid @RequestBody UserActivationVM userActivationVM) {
+        return ResponseEntity.ok(userService.activateUser(userActivationVM.getUsername(),
+                userActivationVM.getPassword(),
+                userActivationVM.getActivationKey()));
+    }
 
 }
