@@ -5,7 +5,10 @@ import lombok.Getter;
 @Getter
 public abstract class BusinessLogicException extends RuntimeException {
 
-    public String title;
+    /**
+     * Default title for business exception
+     */
+    private String title = "Application exception";
 
     public BusinessLogicException(String title, String message) {
         super(message);

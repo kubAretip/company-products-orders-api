@@ -18,4 +18,11 @@ logging:
     pl:
       kubaretip:
         cpo:
-          api: debug
+          api: DEBUG
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
