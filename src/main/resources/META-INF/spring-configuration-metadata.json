@@ -1,3 +1,14 @@
 {
-  "properties": []
+  "properties": [
+    {
+      "name": "validity-time-in-seconds",
+      "type": "java.lang.String",
+      "description": "The token validity time in seconds. Default value is 12h."
+    },
+    {
+      "name": "jwt.base64-secret",
+      "type": "java.lang.String",
+      "description": "Base64 secret for encoding token signature."
+    }
+  ]
 }
