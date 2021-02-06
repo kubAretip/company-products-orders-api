@@ -13,6 +13,23 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>company-products-orders-api</name>
     <description>Backed for company products orders application</description>
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <activatedProfile>dev</activatedProfile>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <activatedProfile>prod</activatedProfile>
+            </properties>
+        </profile>
+    </profiles>
     <properties>
         <java.version>11</java.version>
         <java-jwt.version>3.12.1</java-jwt.version>
