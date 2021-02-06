@@ -16,7 +16,7 @@ public class BusinessLogicExceptionHandler {
 
     @ExceptionHandler(AlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public Error handleAlreadyExistsException(AlreadyExistsException ex, WebRequest request) {
+    public Error handleAlreadyExists(AlreadyExistsException ex, WebRequest request) {
         return Error.builder()
                 .title(ex.getTitle())
                 .status(HttpStatus.CONFLICT.value())
@@ -26,7 +26,7 @@ public class BusinessLogicExceptionHandler {
 
     @ExceptionHandler(AuthorityNotExistsException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Error handleAuthorityNotExistsException(AuthorityNotExistsException ex, WebRequest request) {
+    public Error handleAuthorityNotExists(AuthorityNotExistsException ex, WebRequest request) {
         return Error.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .detail(ex.getMessage())
@@ -35,7 +35,7 @@ public class BusinessLogicExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Error handleNotFoundException(NotFoundException ex, WebRequest request) {
+    public Error handleNotFound(NotFoundException ex, WebRequest request) {
         return Error.builder()
                 .status(HttpStatus.NOT_FOUND.value())
                 .title(ex.getTitle())
@@ -45,7 +45,7 @@ public class BusinessLogicExceptionHandler {
 
     @ExceptionHandler(InvalidDataException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Error handleInvalidDataException(InvalidDataException ex, WebRequest request) {
+    public Error handleInvalidData(InvalidDataException ex, WebRequest request) {
         return Error.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .title(ex.getTitle())

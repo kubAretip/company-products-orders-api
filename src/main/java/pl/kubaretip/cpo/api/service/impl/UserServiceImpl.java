@@ -68,7 +68,7 @@ class UserServiceImpl implements UserService {
                 }, () -> user.setUsername(userDTO.getFirstName().toLowerCase() + "."
                         + userDTO.getLastName().toLowerCase()));
 
-        var employeeAuthority = authorityRepository.findById(AuthoritiesConstants.EMPLOYEE.getRole())
+        var employeeAuthority = authorityRepository.findById(AuthoritiesConstants.EMPLOYEE.role())
                 .orElseThrow(() -> new AuthorityNotExistsException("User cannot be created because data integrity has been compromised." +
                         " Check authority data in the database."));
         user.getAuthorities().add(employeeAuthority);
@@ -82,7 +82,7 @@ class UserServiceImpl implements UserService {
     @Override
     public UserDTO activateUser(String username, String password, String activationKey) {
 
-        var user = userRepository.findByUsername(username)
+        var user = userRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(() -> new NotFoundException("User not found", "User " + username + " not exists"));
 
         if (user.getActivated()) {

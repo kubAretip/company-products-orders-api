@@ -19,10 +19,13 @@ logging:
       kubaretip:
         cpo:
           api: DEBUG
-    org:
-      hibernate:
-        SQL: DEBUG
-        type:
-          descriptor:
-            sql:
-              BasicBinder: TRACE
+#    org:
+#      hibernate:
+#        SQL: DEBUG
+#        type:
+#          descriptor:
+#            sql:
+#              BasicBinder: TRACE
+
+jwt:
+  base64-secret: c2VjcmV0

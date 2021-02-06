@@ -13,8 +13,11 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
 import javax.annotation.PostConstruct;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import static pl.kubaretip.cpo.api.config.AppConstants.TIME_ZONE_UTC;
 
 @Configuration
 public class LocaleConfig implements WebMvcConfigurer {
@@ -22,7 +25,7 @@ public class LocaleConfig implements WebMvcConfigurer {
     // Configuring default time zone and locale
     @PostConstruct
     public void setupDefaults() {
-        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        TimeZone.setDefault(TimeZone.getTimeZone(TIME_ZONE_UTC));
         LocaleContextHolder.setDefaultLocale(Locale.ENGLISH);
     }
 
@@ -53,7 +56,7 @@ public class LocaleConfig implements WebMvcConfigurer {
     public MessageSource messageSource() {
         var messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:i18n/messages");
-        messageSource.setDefaultEncoding("UTF-8");
+        messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
         messageSource.setUseCodeAsDefaultMessage(true); // TODO : only during development
         return messageSource;
     }
