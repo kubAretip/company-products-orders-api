@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.kubaretip.cpo.api.security.AuthenticationFailureHandler;
 import pl.kubaretip.cpo.api.security.AuthenticationSuccessHandler;
+import pl.kubaretip.cpo.api.security.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.security.ExceptionHandlerFilter;
 import pl.kubaretip.cpo.api.security.jwt.JWTAuthenticationFilter;
 import pl.kubaretip.cpo.api.security.jwt.JWTAuthorizationFilter;
@@ -52,6 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .mvcMatchers(HttpMethod.POST, AUTHENTICATE_ENDPOINT).permitAll()
                 .mvcMatchers(HttpMethod.PATCH, "/users/activate").permitAll()
+                .mvcMatchers(HttpMethod.POST,"/users").hasAuthority(AuthoritiesConstants.SUPERVISOR.role())
+                .mvcMatchers(HttpMethod.PATCH,"/users/role").hasAuthority(AuthoritiesConstants.SUPERVISOR.role())
                 .anyRequest()
                 .authenticated()
         .and()

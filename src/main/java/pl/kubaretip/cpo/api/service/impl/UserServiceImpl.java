@@ -16,6 +16,7 @@ import pl.kubaretip.cpo.api.repository.AuthorityRepository;
 import pl.kubaretip.cpo.api.repository.UserRepository;
 import pl.kubaretip.cpo.api.security.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.service.UserService;
+import pl.kubaretip.cpo.api.util.ExceptionUtils;
 import pl.kubaretip.cpo.api.util.Translator;
 
 @Slf4j
@@ -27,17 +28,20 @@ class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final AuthorityRepository authorityRepository;
     private final Translator translator;
+    private final ExceptionUtils exceptionUtils;
 
     public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder,
                            UserMapper userMapper,
                            AuthorityRepository authorityRepository,
-                           Translator translator) {
+                           Translator translator,
+                           ExceptionUtils exceptionUtils) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
         this.authorityRepository = authorityRepository;
         this.translator = translator;
+        this.exceptionUtils = exceptionUtils;
     }
 
     @Override
@@ -73,7 +77,7 @@ class UserServiceImpl implements UserService {
                         + userDTO.getLastName().toLowerCase()));
 
         var employeeAuthority = authorityRepository.findById(AuthoritiesConstants.EMPLOYEE.role())
-                .orElseThrow(() -> new AuthorityNotExistsException(translator.translate("exception.authority.notExists.message")));
+                .orElseThrow(() -> new AuthorityNotExistsException(translator.translate("exception.authority.error.message")));
         user.getAuthorities().add(employeeAuthority);
 
         log.debug(user.getUsername() + " account activation key: " + activationKey);
@@ -86,8 +90,7 @@ class UserServiceImpl implements UserService {
     public UserDTO activateUser(String username, String password, String activationKey) {
 
         var user = userRepository.findByUsernameIgnoreCase(username)
-                .orElseThrow(() -> new NotFoundException(translator.translate("exception.user.notFound.title"),
-                        translator.translate("exception.user.notFound.message", new Object[]{username})));
+                .orElseThrow(() -> exceptionUtils.userNotFound(username));
 
         if (user.getActivated()) {
             throw new InvalidDataException(translator.translate("exception.user.activation.error.title"),
@@ -104,5 +107,20 @@ class UserServiceImpl implements UserService {
             throw new InvalidDataException(translator.translate("exception.user.activation.error.title"),
                     translator.translate("exception.user.activation.incorrectKey.message"));
         }
+    }
+
+    @Override
+    public void assignUserToNewAuthority(Long userId, String role) {
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> exceptionUtils.userNotFound(userId));
+
+        authorityRepository.findByNameOrViewNameIgnoreCase(role)
+                .ifPresentOrElse(authority -> {
+                    user.getAuthorities().add(authority);
+                    userRepository.save(user);
+                }, () -> {
+                    throw new NotFoundException(translator.translate("exception.common.notFound.title"),
+                            translator.translate("exception.authority.notExists.message", new Object[]{role}));
+                });
     }
 }

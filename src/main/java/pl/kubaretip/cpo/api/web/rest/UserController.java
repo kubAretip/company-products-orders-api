@@ -1,5 +1,6 @@
 package pl.kubaretip.cpo.api.web.rest;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -9,6 +10,7 @@ import pl.kubaretip.cpo.api.web.rest.vm.UserActivationVM;
 
 import javax.validation.Valid;
 
+@Slf4j
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -33,6 +35,13 @@ public class UserController {
         return ResponseEntity.ok(userService.activateUser(userActivationVM.getUsername(),
                 userActivationVM.getPassword(),
                 userActivationVM.getActivationKey()));
+    }
+
+    @PatchMapping(path = "/role", params = {"name", "user_id"})
+    public ResponseEntity<Void> assignUserToNewAuthority(@RequestParam(value = "user_id") long userId,
+                                                         @RequestParam(value = "name") String name) {
+        userService.assignUserToNewAuthority(userId, name);
+        return ResponseEntity.noContent().build();
     }
 
 }
