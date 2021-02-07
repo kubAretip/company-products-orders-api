@@ -8,4 +8,6 @@ public interface UserService {
     UserDTO activateUser(String username, String password, String activationKey);
 
     void assignUserToNewAuthority(Long userId, String role);
+
+    void removeUserAuthority(Long userId, String role);
 }

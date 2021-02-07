@@ -12,9 +12,9 @@ import pl.kubaretip.cpo.api.exception.AlreadyExistsException;
 import pl.kubaretip.cpo.api.exception.AuthorityNotExistsException;
 import pl.kubaretip.cpo.api.exception.InvalidDataException;
 import pl.kubaretip.cpo.api.exception.NotFoundException;
-import pl.kubaretip.cpo.api.repository.AuthorityRepository;
 import pl.kubaretip.cpo.api.repository.UserRepository;
 import pl.kubaretip.cpo.api.security.AuthoritiesConstants;
+import pl.kubaretip.cpo.api.service.AuthorityService;
 import pl.kubaretip.cpo.api.service.UserService;
 import pl.kubaretip.cpo.api.util.ExceptionUtils;
 import pl.kubaretip.cpo.api.util.Translator;
@@ -26,22 +26,22 @@ class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
-    private final AuthorityRepository authorityRepository;
     private final Translator translator;
     private final ExceptionUtils exceptionUtils;
+    private final AuthorityService authorityService;
 
     public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder,
                            UserMapper userMapper,
-                           AuthorityRepository authorityRepository,
                            Translator translator,
-                           ExceptionUtils exceptionUtils) {
+                           ExceptionUtils exceptionUtils,
+                           AuthorityService authorityService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
-        this.authorityRepository = authorityRepository;
         this.translator = translator;
         this.exceptionUtils = exceptionUtils;
+        this.authorityService = authorityService;
     }
 
     @Override
@@ -54,8 +54,16 @@ class UserServiceImpl implements UserService {
         }
 
         var user = new User();
-        var activationKey = String.valueOf(RandomUtils.nextLong(100_000_000, 999_999_999));
 
+        // cancel creating user when not exists base role in database
+        try {
+            var employeeAuthority = authorityService.getAuthority(AuthoritiesConstants.ROLE_EMPLOYEE.name());
+            user.getAuthorities().add(employeeAuthority);
+        } catch (NotFoundException ex) {
+            throw new AuthorityNotExistsException(translator.translate("exception.authority.error.message"));
+        }
+
+        var activationKey = String.valueOf(RandomUtils.nextLong(100_000_000, 999_999_999));
         user.setFirstName(StringUtils.capitalize(userDTO.getFirstName().toLowerCase()));
         user.setLastName(StringUtils.capitalize(userDTO.getLastName().toLowerCase()));
         user.setEmail(userDTO.getEmail().toLowerCase());
@@ -76,13 +84,9 @@ class UserServiceImpl implements UserService {
                 }, () -> user.setUsername(userDTO.getFirstName().toLowerCase() + "."
                         + userDTO.getLastName().toLowerCase()));
 
-        var employeeAuthority = authorityRepository.findById(AuthoritiesConstants.EMPLOYEE.role())
-                .orElseThrow(() -> new AuthorityNotExistsException(translator.translate("exception.authority.error.message")));
-        user.getAuthorities().add(employeeAuthority);
-
         log.debug(user.getUsername() + " account activation key: " + activationKey);
         userRepository.save(user);
-        // TODO send mail with activation key
+        // TODO after successful creating new user send mail with activation key
         return userMapper.mapToDTO(user);
     }
 
@@ -113,14 +117,21 @@ class UserServiceImpl implements UserService {
     public void assignUserToNewAuthority(Long userId, String role) {
         var user = userRepository.findById(userId)
                 .orElseThrow(() -> exceptionUtils.userNotFound(userId));
+        user.getAuthorities().add(authorityService.getAuthority(role));
+        userRepository.save(user);
+    }
 
-        authorityRepository.findByNameOrViewNameIgnoreCase(role)
-                .ifPresentOrElse(authority -> {
-                    user.getAuthorities().add(authority);
-                    userRepository.save(user);
-                }, () -> {
-                    throw new NotFoundException(translator.translate("exception.common.notFound.title"),
-                            translator.translate("exception.authority.notExists.message", new Object[]{role}));
-                });
+    @Override
+    public void removeUserAuthority(Long userId, String role) {
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> exceptionUtils.userNotFound(userId));
+        var authority = authorityService.getAuthority(role);
+
+        if (authority.getName().equals(AuthoritiesConstants.ROLE_EMPLOYEE.name()))
+            throw new InvalidDataException(translator.translate("exception.common.actionNotAllowed.title"),
+                    translator.translate("exception.user.removeEmployeeAuthorityError.message"));
+
+        user.getAuthorities().remove(authority);
+        userRepository.save(user);
     }
 }

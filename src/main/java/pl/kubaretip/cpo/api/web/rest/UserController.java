@@ -37,10 +37,15 @@ public class UserController {
                 userActivationVM.getActivationKey()));
     }
 
-    @PatchMapping(path = "/role", params = {"name", "user_id"})
-    public ResponseEntity<Void> assignUserToNewAuthority(@RequestParam(value = "user_id") long userId,
-                                                         @RequestParam(value = "name") String name) {
-        userService.assignUserToNewAuthority(userId, name);
+    @PatchMapping(path = "/role", params = {"name", "user_id", "assign"})
+    public ResponseEntity<Void> assignUserToAuthority(@RequestParam(value = "user_id") long userId,
+                                                      @RequestParam(value = "name") String name,
+                                                      @RequestParam(value = "assign") boolean assign) {
+        if (assign)
+            userService.assignUserToNewAuthority(userId, name);
+        else
+            userService.removeUserAuthority(userId, name);
+
         return ResponseEntity.noContent().build();
     }
 
