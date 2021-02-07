@@ -1,5 +1,7 @@
 package pl.kubaretip.cpo.api.security.jwt;
 
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -13,6 +15,7 @@ import java.io.IOException;
 import static pl.kubaretip.cpo.api.config.AppConstants.JWT_HEADER;
 import static pl.kubaretip.cpo.api.config.AppConstants.JWT_PREFIX;
 
+@Slf4j
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     private final JWTUtil jwtUtil;
@@ -26,11 +29,15 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         var authorizationHeaderValue = request.getHeader(JWT_HEADER);
+        log.debug("Auth header value = {}", authorizationHeaderValue);
         if (jwtUtil.isValidAuthorizationHeaderValue(authorizationHeaderValue)) {
             var token = authorizationHeaderValue.replace(JWT_PREFIX, "");
-            var authentication = jwtUtil.getAuthentication(token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            chain.doFilter(request, response);
+            try {
+                var authentication = jwtUtil.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (JWTDecodeException ex) {
+                log.error("INVALID TOKEN {}", authorizationHeaderValue);
+            }
         }
         chain.doFilter(request, response);
     }
