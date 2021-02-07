@@ -1,4 +1,8 @@
-insert into authority value ('ROLE_SUPERVISOR');
-insert into authority value ('ROLE_EMPLOYEE');
-insert into authority value ('ROLE_STOREKEEPER');
-insert into authority value ('ROLE_EXECUTOR');
+insert into authority(name, view_name)
+values ('ROLE_SUPERVISOR', 'Supervisor');
+insert into authority(name, view_name)
+values ('ROLE_EMPLOYEE', 'Employee');
+insert into authority(name, view_name)
+values ('ROLE_STOREKEEPER', 'Storekeeper');
+insert into authority(name, view_name)
+values ('ROLE_EXECUTOR', 'Executor');

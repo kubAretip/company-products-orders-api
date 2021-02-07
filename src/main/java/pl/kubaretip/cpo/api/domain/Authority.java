@@ -24,6 +24,9 @@ public class Authority {
     @Column(length = 50, nullable = false, unique = true)
     private String name;
 
+    @Column(name = "view_name", length = 45, nullable = false, unique = true)
+    private String viewName;
+
     public void setName(String name) {
         this.name = name.toUpperCase();
     }
