@@ -16,6 +16,7 @@ import pl.kubaretip.cpo.api.repository.AuthorityRepository;
 import pl.kubaretip.cpo.api.repository.UserRepository;
 import pl.kubaretip.cpo.api.security.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.service.UserService;
+import pl.kubaretip.cpo.api.util.Translator;
 
 @Slf4j
 @Service
@@ -25,15 +26,18 @@ class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final AuthorityRepository authorityRepository;
+    private final Translator translator;
 
     public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder,
                            UserMapper userMapper,
-                           AuthorityRepository authorityRepository) {
+                           AuthorityRepository authorityRepository,
+                           Translator translator) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
         this.authorityRepository = authorityRepository;
+        this.translator = translator;
     }
 
     @Override
@@ -41,8 +45,8 @@ class UserServiceImpl implements UserService {
 
         log.debug("Creating new user");
         if (userRepository.existsByEmailIgnoreCase(userDTO.getEmail())) {
-            throw new AlreadyExistsException("Email is already use", "Email " + userDTO.getEmail()
-                    + " is already in use");
+            throw new AlreadyExistsException(translator.translate("exception.email.alreadyInUse.title"),
+                    translator.translate("exception.email.alreadyInUse.message", new Object[]{userDTO.getEmail()}));
         }
 
         var user = new User();
@@ -69,8 +73,7 @@ class UserServiceImpl implements UserService {
                         + userDTO.getLastName().toLowerCase()));
 
         var employeeAuthority = authorityRepository.findById(AuthoritiesConstants.EMPLOYEE.role())
-                .orElseThrow(() -> new AuthorityNotExistsException("User cannot be created because data integrity has been compromised." +
-                        " Check authority data in the database."));
+                .orElseThrow(() -> new AuthorityNotExistsException(translator.translate("exception.authority.notExists.message")));
         user.getAuthorities().add(employeeAuthority);
 
         log.debug(user.getUsername() + " account activation key: " + activationKey);
@@ -83,10 +86,12 @@ class UserServiceImpl implements UserService {
     public UserDTO activateUser(String username, String password, String activationKey) {
 
         var user = userRepository.findByUsernameIgnoreCase(username)
-                .orElseThrow(() -> new NotFoundException("User not found", "User " + username + " not exists"));
+                .orElseThrow(() -> new NotFoundException(translator.translate("exception.user.notFound.title"),
+                        translator.translate("exception.user.notFound.message", new Object[]{username})));
 
         if (user.getActivated()) {
-            throw new InvalidDataException("Activation error", "The account has already been activated");
+            throw new InvalidDataException(translator.translate("exception.user.activation.error.title"),
+                    translator.translate("exception.user.activation.alreadyActivated.message"));
         }
 
         if (passwordEncoder.matches(activationKey, user.getActivationKey())) {
@@ -96,7 +101,8 @@ class UserServiceImpl implements UserService {
             userRepository.save(user);
             return userMapper.mapToDTO(user);
         } else {
-            throw new InvalidDataException("Incorrect activation key", "Your activation key is incorrect");
+            throw new InvalidDataException(translator.translate("exception.user.activation.error.title"),
+                    translator.translate("exception.user.activation.incorrectKey.message"));
         }
     }
 }

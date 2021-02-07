@@ -8,6 +8,7 @@ import pl.kubaretip.cpo.api.dto.mapper.PhoneCountryCodeMapper;
 import pl.kubaretip.cpo.api.exception.AlreadyExistsException;
 import pl.kubaretip.cpo.api.repository.PhoneCountryCodeRepository;
 import pl.kubaretip.cpo.api.service.PhoneCountryCodeService;
+import pl.kubaretip.cpo.api.util.Translator;
 
 import javax.validation.Valid;
 
@@ -17,24 +18,27 @@ public class PhoneCountryCodeServiceImpl implements PhoneCountryCodeService {
 
     private final PhoneCountryCodeMapper phoneCountryCodeMapper;
     private final PhoneCountryCodeRepository phoneCountryCodeRepository;
+    private final Translator translator;
 
     public PhoneCountryCodeServiceImpl(PhoneCountryCodeMapper phoneCountryCodeMapper,
-                                       PhoneCountryCodeRepository phoneCountryCodeRepository) {
+                                       PhoneCountryCodeRepository phoneCountryCodeRepository,
+                                       Translator translator) {
         this.phoneCountryCodeMapper = phoneCountryCodeMapper;
         this.phoneCountryCodeRepository = phoneCountryCodeRepository;
+        this.translator = translator;
     }
 
     @Override
     public PhoneCountryCodeDTO createPhoneCountryCode(@Valid PhoneCountryCodeDTO dto) {
 
         if (phoneCountryCodeRepository.existsByCountryIgnoreCase(dto.getCountry())) {
-            throw new AlreadyExistsException("Phone code already exist", "Phone code for country " + dto.getCountry()
-                    + " already exists.");
+            throw new AlreadyExistsException(translator.translate("exception.phoneCode.alreadyExists.title"),
+                    translator.translate("exception.phoneCode.alreadyExists.message2", new Object[]{dto.getCountry()}));
         }
 
         if (phoneCountryCodeRepository.existsByCodeIgnoreCase(dto.getCode())) {
-            throw new AlreadyExistsException("Phone code already exists", "Phone code " + dto.getCode()
-                    + " already exists.");
+            throw new AlreadyExistsException(translator.translate("exception.phoneCode.alreadyExists.title"),
+                    translator.translate("exception.phoneCode.alreadyExists.message", new Object[]{dto.getCode()}));
         }
 
         dto.setCountry(StringUtils.capitalize(dto.getCountry().toLowerCase()));
