@@ -58,6 +58,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(HttpMethod.POST,"/categories/*").hasAuthority(AuthoritiesConstants.ROLE_SUPERVISOR.name())
                 .mvcMatchers(HttpMethod.PATCH,"/categories/*").hasAuthority(AuthoritiesConstants.ROLE_SUPERVISOR.name())
                 .mvcMatchers(HttpMethod.GET,"/categories/*").hasAuthority(AuthoritiesConstants.ROLE_EMPLOYEE.name())
+                .mvcMatchers(HttpMethod.POST,"/units/*").hasAuthority(AuthoritiesConstants.ROLE_SUPERVISOR.name())
+                .mvcMatchers(HttpMethod.PATCH,"/units/*").hasAuthority(AuthoritiesConstants.ROLE_SUPERVISOR.name())
                 .anyRequest()
                 .authenticated()
         .and()

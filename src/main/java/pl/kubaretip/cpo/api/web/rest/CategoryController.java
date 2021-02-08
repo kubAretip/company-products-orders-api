@@ -4,9 +4,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.kubaretip.cpo.api.dto.CategoryDTO;
-import pl.kubaretip.cpo.api.exception.InvalidDataException;
 import pl.kubaretip.cpo.api.service.CategoryService;
-import pl.kubaretip.cpo.api.util.Translator;
+import pl.kubaretip.cpo.api.util.ExceptionUtils;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -16,12 +15,12 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryService categoryService;
-    private final Translator translator;
+    private final ExceptionUtils exceptionUtils;
 
     public CategoryController(CategoryService categoryService,
-                              Translator translator) {
+                              ExceptionUtils exceptionUtils) {
         this.categoryService = categoryService;
-        this.translator = translator;
+        this.exceptionUtils = exceptionUtils;
     }
 
     @GetMapping
@@ -57,10 +56,9 @@ public class CategoryController {
     public ResponseEntity<CategoryDTO> editCategory(@PathVariable("id") long categoryId,
                                                     @Valid @RequestBody CategoryDTO categoryDTO) {
 
-        if (categoryDTO.getId() == null || categoryDTO.getId() != categoryId) {
-            throw new InvalidDataException(translator.translate("exception.common.badRequest.title"),
-                    translator.translate("exception.common.pathIdNotEqualsBodyId.message"));
-        }
+        if (categoryDTO.getId() == null || categoryDTO.getId() != categoryId)
+            throw exceptionUtils.pathIdNotEqualsBodyId();
+
         return ResponseEntity.ok(categoryService.modifyCategory(categoryId, categoryDTO));
     }
 
