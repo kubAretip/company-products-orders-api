@@ -14,7 +14,7 @@ public class CategoryDTO {
 
     private Long id;
 
-    @NotBlank
-    @Size(min = 1, max = 150)
+    @NotBlank(message = "{validation.category.name.notBlank.message}")
+    @Size(min = 1, max = 150, message = "{validation.category.name.size.message}")
     private String name;
 }
