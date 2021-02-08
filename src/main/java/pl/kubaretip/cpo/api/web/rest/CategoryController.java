@@ -38,7 +38,7 @@ public class CategoryController {
     public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryDTO categoryDTO,
                                                       UriComponentsBuilder uriComponentsBuilder) {
         var category = categoryService.createCategory(categoryDTO);
-        var locationURI = uriComponentsBuilder.path("/users/{id}")
+        var locationURI = uriComponentsBuilder.path("/categories/{id}")
                 .buildAndExpand(category.getId()).toUri();
         return ResponseEntity.created(locationURI).body(category);
     }
