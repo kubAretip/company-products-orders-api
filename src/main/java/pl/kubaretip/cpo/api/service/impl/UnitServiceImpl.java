@@ -27,6 +27,11 @@ public class UnitServiceImpl implements UnitService {
     }
 
     @Override
+    public UnitDTO getUnitById(long unitId) {
+        return unitMapper.mapToDTO(findUnitById(unitId));
+    }
+
+    @Override
     public UnitDTO createUnit(UnitDTO unitDTO) {
 
         if (unitRepository.existsByName(unitDTO.getName()))
@@ -75,6 +80,11 @@ public class UnitServiceImpl implements UnitService {
         return unitMapper.mapToDTO(unit);
     }
 
+    Unit findUnitById(long unitId) {
+        return unitRepository.findById(unitId)
+                .orElseThrow(() -> unitWithIdNotFound(unitId));
+    }
+
     private AlreadyExistsException unitWithNameAlreadyExists(String name) {
         return new AlreadyExistsException(translator.translate("exception.common.alreadyExists.title"),
                 translator.translate("exception.unit.name.unique.message", new Object[]{name}));
@@ -85,10 +95,9 @@ public class UnitServiceImpl implements UnitService {
                 translator.translate("exception.unit.symbol.unique.message", new Object[]{symbol}));
     }
 
-    Unit findUnitById(long unitId) {
-        return unitRepository.findById(unitId)
-                .orElseThrow(() -> new NotFoundException(translator.translate("exception.common.notFound.title"),
-                        translator.translate("exception.unit.byIdNotFound.message", new Object[]{unitId})));
+    private NotFoundException unitWithIdNotFound(long unitId) {
+        return new NotFoundException(translator.translate("exception.common.notFound.title"),
+                translator.translate("exception.unit.byIdNotFound.message", new Object[]{unitId}));
     }
 
 }

@@ -34,7 +34,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDTO findById(long categoryId) {
+    public CategoryDTO getCategoryById(long categoryId) {
         return categoryMapper.mapToDTO(findCategoryById(categoryId));
     }
 
@@ -81,11 +81,14 @@ public class CategoryServiceImpl implements CategoryService {
                 translator.translate("exception.category.alreadyExists.message", new Object[]{categoryName}));
     }
 
+    private NotFoundException categoryWithIdNotFound(long categoryId) {
+        return new NotFoundException(translator.translate("exception.common.notFound.title"),
+                translator.translate("exception.category.byIdNotExists.message", new Object[]{categoryId}));
+    }
 
     Category findCategoryById(long categoryId) {
         return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NotFoundException(translator.translate("exception.common.notFound.title"),
-                        translator.translate("exception.category.byIdNotExists.message", new Object[]{categoryId})));
+                .orElseThrow(() -> categoryWithIdNotFound(categoryId));
     }
 
 }
