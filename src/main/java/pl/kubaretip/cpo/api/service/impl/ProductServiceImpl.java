@@ -92,13 +92,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private AlreadyExistsException productWithNameAlreadyExists(String name) {
-        return new AlreadyExistsException(translator.translate("exception.common.alreadyExists.title"),
-                translator.translate("exception.product.alreadyExists.message", new Object[]{name}));
+        return new AlreadyExistsException(translator.translate("common.alreadyExists.title"),
+                translator.translate("product.alreadyExists.name.message", new Object[]{name}));
     }
 
     private NotFoundException productWithIdNotFound(long productId) {
-        return new NotFoundException(translator.translate("exception.common.notFound.title"),
-                translator.translate("exception.product.byIdNotExists.message", new Object[]{productId}));
+        return new NotFoundException(translator.translate("common.notFound.title"),
+                translator.translate("product.notFound.id.message", new Object[]{productId}));
     }
 
 }

@@ -32,13 +32,13 @@ public class PhoneCountryCodeServiceImpl implements PhoneCountryCodeService {
     public PhoneCountryCodeDTO createPhoneCountryCode(@Valid PhoneCountryCodeDTO dto) {
 
         if (phoneCountryCodeRepository.existsByCountryIgnoreCase(dto.getCountry())) {
-            throw new AlreadyExistsException(translator.translate("exception.phoneCode.alreadyExists.title"),
-                    translator.translate("exception.phoneCode.alreadyExists.message2", new Object[]{dto.getCountry()}));
+            throw new AlreadyExistsException(translator.translate("phoneCode.alreadyExists.title"),
+                    translator.translate("phoneCode.alreadyExists.country.message", new Object[]{dto.getCountry()}));
         }
 
         if (phoneCountryCodeRepository.existsByCodeIgnoreCase(dto.getCode())) {
-            throw new AlreadyExistsException(translator.translate("exception.phoneCode.alreadyExists.title"),
-                    translator.translate("exception.phoneCode.alreadyExists.message", new Object[]{dto.getCode()}));
+            throw new AlreadyExistsException(translator.translate("phoneCode.alreadyExists.title"),
+                    translator.translate("phoneCode.alreadyExists.code.message", new Object[]{dto.getCode()}));
         }
 
         dto.setCountry(StringUtils.capitalize(dto.getCountry().toLowerCase()));

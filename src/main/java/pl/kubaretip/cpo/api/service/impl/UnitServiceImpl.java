@@ -86,18 +86,18 @@ public class UnitServiceImpl implements UnitService {
     }
 
     private AlreadyExistsException unitWithNameAlreadyExists(String name) {
-        return new AlreadyExistsException(translator.translate("exception.common.alreadyExists.title"),
-                translator.translate("exception.unit.name.unique.message", new Object[]{name}));
+        return new AlreadyExistsException(translator.translate("common.alreadyExists.title"),
+                translator.translate("unit.alreadyExists.name.message", new Object[]{name}));
     }
 
     private AlreadyExistsException unitWithSymbolAlreadyExists(String symbol) {
-        return new AlreadyExistsException(translator.translate("exception.common.alreadyExists.title"),
-                translator.translate("exception.unit.symbol.unique.message", new Object[]{symbol}));
+        return new AlreadyExistsException(translator.translate("common.alreadyExists.title"),
+                translator.translate("unit.alreadyExists.symbol.message", new Object[]{symbol}));
     }
 
     private NotFoundException unitWithIdNotFound(long unitId) {
-        return new NotFoundException(translator.translate("exception.common.notFound.title"),
-                translator.translate("exception.unit.byIdNotFound.message", new Object[]{unitId}));
+        return new NotFoundException(translator.translate("common.notFound.title"),
+                translator.translate("unit.notFound.id.message", new Object[]{unitId}));
     }
 
 }

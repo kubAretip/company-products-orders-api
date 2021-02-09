@@ -77,13 +77,13 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private AlreadyExistsException categoryWithNameAlreadyExists(String categoryName) {
-        return new AlreadyExistsException(translator.translate("exception.common.alreadyExists.title"),
-                translator.translate("exception.category.alreadyExists.message", new Object[]{categoryName}));
+        return new AlreadyExistsException(translator.translate("category.alreadyExists.title"),
+                translator.translate("category.alreadyExists.name.message", new Object[]{categoryName}));
     }
 
     private NotFoundException categoryWithIdNotFound(long categoryId) {
-        return new NotFoundException(translator.translate("exception.common.notFound.title"),
-                translator.translate("exception.category.byIdNotExists.message", new Object[]{categoryId}));
+        return new NotFoundException(translator.translate("common.notFound.title"),
+                translator.translate("category.notFound.id.message", new Object[]{categoryId}));
     }
 
     Category findCategoryById(long categoryId) {

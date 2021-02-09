@@ -14,10 +14,10 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class CategoryDTO {
 
-    @NotNull(message = "{validation.category.id.notNull.message}", groups = {Pk.class})
+    @NotNull(message = "{validation.category.id.notNull}", groups = {Pk.class})
     private Long id;
 
-    @NotBlank(message = "{validation.category.name.notBlank.message}")
-    @Size(min = 1, max = 150, message = "{validation.category.name.size.message}")
+    @NotBlank(message = "{validation.category.name.notBlank}")
+    @Size(min = 1, max = 150, message = "{validation.category.name.size}")
     private String name;
 }

@@ -14,18 +14,18 @@ public class ExceptionUtils {
     }
 
     public NotFoundException userNotFound(String username) {
-        return new NotFoundException(translator.translate("exception.user.notFound.title"),
-                translator.translate("exception.user.notFound.message", new Object[]{username}));
+        return new NotFoundException(translator.translate("user.notFound.title"),
+                translator.translate("user.notFound.username.message", new Object[]{username}));
     }
 
     public NotFoundException userNotFound(long userId) {
-        return new NotFoundException(translator.translate("exception.user.notFound.title"),
-                translator.translate("exception.user.notFound.message2", new Object[]{userId}));
+        return new NotFoundException(translator.translate("user.notFound.title"),
+                translator.translate("user.notFound.id.message", new Object[]{userId}));
     }
 
     public InvalidDataException pathIdNotEqualsBodyId() {
-        return new InvalidDataException(translator.translate("exception.common.badRequest.title"),
-                translator.translate("exception.common.pathIdNotEqualsBodyId.message"));
+        return new InvalidDataException(translator.translate("common.badRequest.title"),
+                translator.translate("common.pathIdNotEqualsBodyId.message"));
     }
 
 

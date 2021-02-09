@@ -17,20 +17,20 @@ import javax.validation.groups.ConvertGroup;
 @NoArgsConstructor
 public class ProductDTO {
 
-    @NotNull(message = "{validation.product.id.notNull.message}", groups = {Update.class})
+    @NotNull(message = "{validation.product.id.notNull}", groups = {Update.class})
     private Long id;
 
-    @NotBlank(message = "{validation.product.name.notBlank.message}")
-    @Size(min = 2, max = 150, message = "{validation.product.name.size.message}")
+    @NotBlank(message = "{validation.product.name.notBlank}")
+    @Size(min = 2, max = 150, message = "{validation.product.name.size}")
     private String name;
 
     @Valid
-    @NotNull(message = "{validation.product.category.notNull.message}")
+    @NotNull(message = "{validation.product.category.notNull}")
     @ConvertGroup(to = Pk.class)
     private CategoryDTO category;
 
     @Valid
-    @NotNull(message = "{validation.product.unit.notNull.message}")
+    @NotNull(message = "{validation.product.unit.notNull}")
     @ConvertGroup(to = Pk.class)
     private UnitDTO unit;
 

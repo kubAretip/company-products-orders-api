@@ -43,15 +43,15 @@ public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailure
         if (exception instanceof UserNotActivatedException) {
             var userNotActivatedException = (UserNotActivatedException) exception;
             errorBuilder
-                    .title(translator.translate("exception.userNotActivated.title"))
-                    .detail(translator.translate("exception.userNotActivated.message",
+                    .title(translator.translate("user.notActivated.title"))
+                    .detail(translator.translate("user.notActivated.message",
                             new Object[]{userNotActivatedException.getInactiveUser()}));
         }
 
         if (exception instanceof BadCredentialsException) {
             errorBuilder
-                    .title(translator.translate("exception.badCredentials.title"))
-                    .detail(translator.translate("exception.badCredentials.message"));
+                    .title(translator.translate("common.badCredentials.title"))
+                    .detail(translator.translate("common.badCredentials.message"));
         }
 
         var jsonErrorResponse = objectMapper.writeValueAsString(errorBuilder.build());

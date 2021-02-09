@@ -13,14 +13,14 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class PhoneCountryCodeDTO {
 
-    @Size(min = 1, max = 64)
-    @NotBlank
-    @Pattern(regexp = "[a-zA-Z]+")
+    @Size(min = 1, max = 64, message = "{validation.phoneCountryCode.country.size}")
+    @NotBlank(message = "{validation.phoneCountryCode.country.notBlank}")
+    @Pattern(regexp = "[a-zA-Z]+", message = "{validation.phoneCountryCode.country.pattern}")
     private String country;
 
-    @Size(min = 1, max = 7)
-    @NotBlank
-    @Pattern(regexp = "^(?!-)[\\d-]+.*(?<!-)$")
+    @Size(min = 1, max = 7, message = "{validation.phoneCountryCode.code.size}")
+    @NotBlank(message = "{validation.phoneCountryCode.code.notBlank}")
+    @Pattern(regexp = "^(?!-)[\\d-]+.*(?<!-)$", message = "{validation.phoneCountryCode.code.pattern}")
     private String code;
 
 }

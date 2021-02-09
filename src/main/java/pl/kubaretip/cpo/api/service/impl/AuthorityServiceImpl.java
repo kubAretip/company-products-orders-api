@@ -22,8 +22,8 @@ public class AuthorityServiceImpl implements AuthorityService {
     @Override
     public Authority getAuthority(String role) {
         return authorityRepository.findByNameOrViewNameIgnoreCase(role)
-                .orElseThrow(() -> new NotFoundException(translator.translate("exception.common.notFound.title"),
-                        translator.translate("exception.authority.notExists.message", new Object[]{role})));
+                .orElseThrow(() -> new NotFoundException(translator.translate("common.notFound.title"),
+                        translator.translate("authority.notFound.message", new Object[]{role})));
     }
 
 }

@@ -49,8 +49,8 @@ class UserServiceImpl implements UserService {
 
         log.debug("Creating new user");
         if (userRepository.existsByEmailIgnoreCase(userDTO.getEmail())) {
-            throw new AlreadyExistsException(translator.translate("exception.email.alreadyInUse.title"),
-                    translator.translate("exception.email.alreadyInUse.message", new Object[]{userDTO.getEmail()}));
+            throw new AlreadyExistsException(translator.translate("user.alreadyInUse.email.title"),
+                    translator.translate("user.alreadyInUse.email.message", new Object[]{userDTO.getEmail()}));
         }
 
         var user = new User();
@@ -60,7 +60,7 @@ class UserServiceImpl implements UserService {
             var employeeAuthority = authorityService.getAuthority(AuthoritiesConstants.ROLE_EMPLOYEE.name());
             user.getAuthorities().add(employeeAuthority);
         } catch (NotFoundException ex) {
-            throw new AuthorityNotExistsException(translator.translate("exception.authority.error.message"));
+            throw new AuthorityNotExistsException(translator.translate("authority.error.message"));
         }
 
         var activationKey = String.valueOf(RandomUtils.nextLong(100_000_000, 999_999_999));
@@ -97,8 +97,8 @@ class UserServiceImpl implements UserService {
                 .orElseThrow(() -> exceptionUtils.userNotFound(username));
 
         if (user.getActivated()) {
-            throw new InvalidDataException(translator.translate("exception.user.activation.error.title"),
-                    translator.translate("exception.user.activation.alreadyActivated.message"));
+            throw new InvalidDataException(translator.translate("user.alreadyActivated.title"),
+                    translator.translate("user.alreadyActivated.message"));
         }
 
         if (passwordEncoder.matches(activationKey, user.getActivationKey())) {
@@ -108,8 +108,8 @@ class UserServiceImpl implements UserService {
             userRepository.save(user);
             return userMapper.mapToDTO(user);
         } else {
-            throw new InvalidDataException(translator.translate("exception.user.activation.error.title"),
-                    translator.translate("exception.user.activation.incorrectKey.message"));
+            throw new InvalidDataException(translator.translate("user.alreadyActivated.title"),
+                    translator.translate("user.incorrect.activationKey.message"));
         }
     }
 
@@ -128,8 +128,8 @@ class UserServiceImpl implements UserService {
         var authority = authorityService.getAuthority(role);
 
         if (authority.getName().equals(AuthoritiesConstants.ROLE_EMPLOYEE.name()))
-            throw new InvalidDataException(translator.translate("exception.common.actionNotAllowed.title"),
-                    translator.translate("exception.user.removeEmployeeAuthorityError.message"));
+            throw new InvalidDataException(translator.translate("common.actionNotAllowed.title"),
+                    translator.translate("user.notAllowed.removeEmployeeAuthority.message"));
 
         user.getAuthorities().remove(authority);
         userRepository.save(user);
