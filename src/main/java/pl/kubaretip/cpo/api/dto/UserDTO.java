@@ -6,12 +6,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.kubaretip.cpo.api.validation.groups.Update;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 import static pl.kubaretip.cpo.api.config.AppConstants.*;
+import static pl.kubaretip.cpo.api.util.RegexpConstants.ONLY_LETTERS_REGEXP;
+import static pl.kubaretip.cpo.api.util.RegexpConstants.PASSWORD_REGEXP;
 
 @Getter
 @Setter
@@ -25,12 +24,12 @@ public class UserDTO {
 
     @NotBlank(message = "{validation.user.firstName.notBlank}")
     @Size(min = 1, max = 50, message = "{validation.user.firstName.size}")
-    @Pattern(regexp = "[a-zA-Z]+", message = "{validation.user.firstName.pattern}")
+    @Pattern(regexp = ONLY_LETTERS_REGEXP, message = "{validation.user.firstName.pattern}")
     private String firstName;
 
     @NotBlank(message = "{validation.user.lastName.notBlank}")
     @Size(min = 1, max = 50, message = "{validation.user.lastName.size}")
-    @Pattern(regexp = "[a-zA-Z]+", message = "{validation.user.lastName.pattern}")
+    @Pattern(regexp = ONLY_LETTERS_REGEXP, message = "{validation.user.lastName.pattern}")
     private String lastName;
 
     @Email(message = "{validation.user.email.email}")
@@ -45,7 +44,7 @@ public class UserDTO {
     private String password;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Pattern(regexp = "[0-9]+", message = "{validation.user.activationKey.pattern}", groups = {Update.class})
+    @Digits(integer = USER_ACTIVATION_KEY_LENGTH, fraction = 0, message = "{validation.user.activationKey.digits}", groups = {Update.class})
     @NotBlank(message = "{validation.user.activationKey.notBlank}", groups = {Update.class})
     private String activationKey;
 

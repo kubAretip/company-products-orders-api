@@ -1,7 +1,7 @@
 package pl.kubaretip.cpo.api.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,6 +18,8 @@ import pl.kubaretip.cpo.api.service.AuthorityService;
 import pl.kubaretip.cpo.api.service.UserService;
 import pl.kubaretip.cpo.api.util.ExceptionUtils;
 import pl.kubaretip.cpo.api.util.Translator;
+
+import static pl.kubaretip.cpo.api.config.AppConstants.USER_ACTIVATION_KEY_LENGTH;
 
 @Slf4j
 @Service
@@ -63,7 +65,7 @@ class UserServiceImpl implements UserService {
             throw new AuthorityNotExistsException(translator.translate("authority.error.message"));
         }
 
-        var activationKey = String.valueOf(RandomUtils.nextLong(100_000_000, 999_999_999));
+        var activationKey = RandomStringUtils.randomNumeric(USER_ACTIVATION_KEY_LENGTH);
         user.setFirstName(StringUtils.capitalize(userDTO.getFirstName().toLowerCase()));
         user.setLastName(StringUtils.capitalize(userDTO.getLastName().toLowerCase()));
         user.setEmail(userDTO.getEmail().toLowerCase());
