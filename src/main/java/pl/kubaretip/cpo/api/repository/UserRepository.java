@@ -11,12 +11,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmailIgnoreCase(String email);
 
-    @Query(
-            value = "SELECT * from user where upper(first_name)= upper(:firstName) " +
-                    "and upper(last_name)=upper(:lastName) order by username desc limit 1",
+    @Query(value = "SELECT * FROM user WHERE upper(first_name)= upper(:firstName) " +
+            "AND upper(last_name)=upper(:lastName) ORDER BY username DESC LIMIT 1",
             nativeQuery = true)
-    Optional<User> findLatestUsernameForFirstNameAndLastName(@Param("firstName") String firstName,
-                                                             @Param("lastName") String lastName);
+    Optional<User> findLastGeneratedUsernameForFirstAndLastName(@Param("firstName") String firstName,
+                                                                @Param("lastName") String lastName);
+
     Optional<User> findByUsernameIgnoreCase(String username);
 
 }

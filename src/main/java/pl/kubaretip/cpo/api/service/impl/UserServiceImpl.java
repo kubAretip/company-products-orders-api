@@ -70,7 +70,7 @@ class UserServiceImpl implements UserService {
         user.setActivationKey(passwordEncoder.encode(activationKey));
 
         // generate username
-        userRepository.findLatestUsernameForFirstNameAndLastName(user.getFirstName(), user.getLastName())
+        userRepository.findLastGeneratedUsernameForFirstAndLastName(user.getFirstName(), user.getLastName())
                 .ifPresentOrElse(u -> {
                     var lastUserNameChar = u.getUsername().charAt(u.getUsername().length() - 1);
                     if (Character.isDigit(lastUserNameChar)) {
