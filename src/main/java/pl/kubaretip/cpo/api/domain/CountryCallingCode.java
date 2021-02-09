@@ -10,13 +10,13 @@ import java.io.Serializable;
 @Entity
 @Getter
 @Setter
-public class PhoneCountryCode implements Serializable {
+public class CountryCallingCode implements Serializable {
 
     @Id
-    @Column(length = 7, nullable = false, unique = true)
-    private String code;
-
     @Column(length = 64, nullable = false, unique = true)
     private String country;
+
+    @Column(length = 7, nullable = false)
+    private String code;
 
 }

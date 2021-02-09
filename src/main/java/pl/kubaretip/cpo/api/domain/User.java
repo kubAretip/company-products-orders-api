@@ -34,8 +34,8 @@ public class User {
     @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
 
-    @Embedded
-    private Phone phone;
+    @Column(name = "phone_number", length = 20)
+    private String phoneNumber;
 
     @Column(nullable = false)
     private Boolean activated = false;

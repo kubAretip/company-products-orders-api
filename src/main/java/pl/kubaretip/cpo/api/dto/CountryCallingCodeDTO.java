@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 @Setter
 @Getter
 @NoArgsConstructor
-public class PhoneCountryCodeDTO {
+public class CountryCallingCodeDTO {
 
     @Size(min = 1, max = 64, message = "{validation.phoneCountryCode.country.size}")
     @NotBlank(message = "{validation.phoneCountryCode.country.notBlank}")

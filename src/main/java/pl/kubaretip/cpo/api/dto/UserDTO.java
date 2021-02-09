@@ -49,8 +49,6 @@ public class UserDTO {
     @NotBlank(message = "{validation.user.activationKey.notBlank}", groups = {Update.class})
     private String activationKey;
 
-    private PhoneCountryCodeDTO phoneCountryCode;
-
     private String phoneNumber;
 
 }
