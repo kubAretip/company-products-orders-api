@@ -25,7 +25,7 @@ public class CountryCallingCodeController {
     public ResponseEntity<CountryCallingCodeDTO> createCountryCallingCode(@Valid @RequestBody CountryCallingCodeDTO dto,
                                                                           UriComponentsBuilder uriComponentsBuilder) {
         var phoneCountryCode = countryCallingCodeService.createPhoneCountryCode(dto);
-        var location = uriComponentsBuilder.path("/phone-codes/{id}")
+        var location = uriComponentsBuilder.path("/country-calling-codes/{id}")
                 .buildAndExpand(phoneCountryCode.getCountry().toLowerCase()).toUri();
         return ResponseEntity.created(location).body(phoneCountryCode);
     }
