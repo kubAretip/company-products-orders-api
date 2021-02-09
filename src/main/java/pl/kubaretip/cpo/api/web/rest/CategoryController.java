@@ -1,13 +1,16 @@
 package pl.kubaretip.cpo.api.web.rest;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.kubaretip.cpo.api.dto.CategoryDTO;
 import pl.kubaretip.cpo.api.service.CategoryService;
 import pl.kubaretip.cpo.api.util.ExceptionUtils;
+import pl.kubaretip.cpo.api.validation.groups.Pk;
 
 import javax.validation.Valid;
+import javax.validation.groups.Default;
 import java.util.List;
 
 @RestController
@@ -54,9 +57,9 @@ public class CategoryController {
 
     @PatchMapping(path = "/{id}")
     public ResponseEntity<CategoryDTO> editCategory(@PathVariable("id") long categoryId,
-                                                    @Valid @RequestBody CategoryDTO categoryDTO) {
+                                                    @Validated({Default.class, Pk.class}) @RequestBody CategoryDTO categoryDTO) {
 
-        if (categoryDTO.getId() == null || categoryDTO.getId() != categoryId)
+        if (categoryDTO.getId() != categoryId)
             throw exceptionUtils.pathIdNotEqualsBodyId();
 
         return ResponseEntity.ok(categoryService.modifyCategory(categoryId, categoryDTO));

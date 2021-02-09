@@ -2,11 +2,12 @@ package pl.kubaretip.cpo.api.web.rest;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.kubaretip.cpo.api.dto.UserDTO;
 import pl.kubaretip.cpo.api.service.UserService;
-import pl.kubaretip.cpo.api.web.rest.vm.UserActivationVM;
+import pl.kubaretip.cpo.api.validation.groups.Update;
 
 import javax.validation.Valid;
 
@@ -31,10 +32,9 @@ public class UserController {
     }
 
     @PatchMapping("/activate")
-    public ResponseEntity<UserDTO> activateUser(@Valid @RequestBody UserActivationVM userActivationVM) {
-        return ResponseEntity.ok(userService.activateUser(userActivationVM.getUsername(),
-                userActivationVM.getPassword(),
-                userActivationVM.getActivationKey()));
+    public ResponseEntity<UserDTO> activateUser(@Validated({Update.class}) @RequestBody UserDTO userDTO) {
+        return ResponseEntity.ok(userService.activateUser(userDTO.getUsername(),
+                userDTO.getPassword(), userDTO.getActivationKey()));
     }
 
     @PatchMapping(path = "/role", params = {"name", "user_id", "assign"})

@@ -1,13 +1,16 @@
 package pl.kubaretip.cpo.api.web.rest;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.kubaretip.cpo.api.dto.UnitDTO;
 import pl.kubaretip.cpo.api.service.UnitService;
 import pl.kubaretip.cpo.api.util.ExceptionUtils;
+import pl.kubaretip.cpo.api.validation.groups.Pk;
 
 import javax.validation.Valid;
+import javax.validation.groups.Default;
 
 @RestController
 @RequestMapping("/units")
@@ -41,8 +44,8 @@ public class UnitController {
 
     @PatchMapping(path = "/{id}")
     public ResponseEntity<UnitDTO> editUnit(@PathVariable("id") long unitId,
-                                            @Valid @RequestBody UnitDTO unitDTO) {
-        if (unitDTO.getId() == null || unitDTO.getId() != unitId)
+                                            @Validated({Default.class, Pk.class}) @RequestBody UnitDTO unitDTO) {
+        if (unitDTO.getId() != unitId)
             throw exceptionUtils.pathIdNotEqualsBodyId();
 
         return ResponseEntity.ok(unitService.modifyUnit(unitDTO));
