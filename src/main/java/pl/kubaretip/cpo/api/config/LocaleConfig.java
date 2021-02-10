@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import static pl.kubaretip.cpo.api.config.AppConstants.TIME_ZONE_UTC;
+import static pl.kubaretip.cpo.api.constants.AppConstants.TIME_ZONE_UTC;
 
 @Configuration
 public class LocaleConfig implements WebMvcConfigurer {

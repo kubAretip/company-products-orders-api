@@ -8,9 +8,9 @@ import pl.kubaretip.cpo.api.validation.groups.Update;
 
 import javax.validation.constraints.*;
 
-import static pl.kubaretip.cpo.api.config.AppConstants.*;
-import static pl.kubaretip.cpo.api.util.RegexpConstants.ONLY_LETTERS_REGEXP;
-import static pl.kubaretip.cpo.api.util.RegexpConstants.PASSWORD_REGEXP;
+import static pl.kubaretip.cpo.api.constants.AppConstants.*;
+import static pl.kubaretip.cpo.api.constants.RegexpConstants.ONLY_LETTERS_REGEXP;
+import static pl.kubaretip.cpo.api.constants.RegexpConstants.PASSWORD_REGEXP;
 
 @Getter
 @Setter

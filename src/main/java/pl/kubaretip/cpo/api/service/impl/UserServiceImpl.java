@@ -13,13 +13,13 @@ import pl.kubaretip.cpo.api.exception.AuthorityNotExistsException;
 import pl.kubaretip.cpo.api.exception.InvalidDataException;
 import pl.kubaretip.cpo.api.exception.NotFoundException;
 import pl.kubaretip.cpo.api.repository.UserRepository;
-import pl.kubaretip.cpo.api.security.AuthoritiesConstants;
+import pl.kubaretip.cpo.api.constants.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.service.AuthorityService;
 import pl.kubaretip.cpo.api.service.UserService;
 import pl.kubaretip.cpo.api.util.ExceptionUtils;
 import pl.kubaretip.cpo.api.util.Translator;
 
-import static pl.kubaretip.cpo.api.config.AppConstants.USER_ACTIVATION_KEY_LENGTH;
+import static pl.kubaretip.cpo.api.constants.AppConstants.USER_ACTIVATION_KEY_LENGTH;
 
 @Slf4j
 @Service

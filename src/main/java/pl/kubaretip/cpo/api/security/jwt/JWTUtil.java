@@ -17,9 +17,10 @@ import pl.kubaretip.cpo.api.security.SecurityUser;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-import static pl.kubaretip.cpo.api.config.AppConstants.JWT_PREFIX;
-import static pl.kubaretip.cpo.api.security.jwt.JWTClaimsConstants.AUTHORITIES_KEY;
-import static pl.kubaretip.cpo.api.security.jwt.JWTClaimsConstants.SUB_ID_KEY;
+import static pl.kubaretip.cpo.api.constants.AppConstants.JWT_PREFIX;
+import static pl.kubaretip.cpo.api.constants.JWTClaimsConstants.AUTHORITIES_KEY;
+import static pl.kubaretip.cpo.api.constants.JWTClaimsConstants.SUB_ID_KEY;
+
 
 @Component
 public class JWTUtil {

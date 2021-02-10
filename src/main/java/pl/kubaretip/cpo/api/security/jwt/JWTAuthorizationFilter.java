@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static pl.kubaretip.cpo.api.config.AppConstants.JWT_HEADER;
-import static pl.kubaretip.cpo.api.config.AppConstants.JWT_PREFIX;
+import static pl.kubaretip.cpo.api.constants.AppConstants.JWT_HEADER;
+import static pl.kubaretip.cpo.api.constants.AppConstants.JWT_PREFIX;
 
 @Slf4j
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {

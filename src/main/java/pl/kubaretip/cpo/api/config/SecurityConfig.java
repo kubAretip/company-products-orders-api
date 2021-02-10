@@ -11,14 +11,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.kubaretip.cpo.api.security.AuthenticationFailureHandler;
 import pl.kubaretip.cpo.api.security.AuthenticationSuccessHandler;
-import pl.kubaretip.cpo.api.security.AuthoritiesConstants;
+import pl.kubaretip.cpo.api.constants.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.security.ExceptionHandlerFilter;
 import pl.kubaretip.cpo.api.security.jwt.JWTAuthenticationFilter;
 import pl.kubaretip.cpo.api.security.jwt.JWTAuthorizationFilter;
 import pl.kubaretip.cpo.api.security.jwt.JWTUtil;
 import pl.kubaretip.cpo.api.util.Translator;
 
-import static pl.kubaretip.cpo.api.config.AppConstants.AUTHENTICATE_ENDPOINT;
+import static pl.kubaretip.cpo.api.constants.AppConstants.AUTHENTICATE_ENDPOINT;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {

@@ -8,8 +8,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import static pl.kubaretip.cpo.api.util.RegexpConstants.COUNTRY_CALLING_CODE_REGEXP;
-import static pl.kubaretip.cpo.api.util.RegexpConstants.ONLY_LETTERS_REGEXP;
+import static pl.kubaretip.cpo.api.constants.RegexpConstants.COUNTRY_CALLING_CODE_REGEXP;
+import static pl.kubaretip.cpo.api.constants.RegexpConstants.ONLY_LETTERS_REGEXP;
 
 @Setter
 @Getter
