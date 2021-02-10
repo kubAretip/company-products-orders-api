@@ -59,7 +59,7 @@ class UserServiceImpl implements UserService {
 
         // cancel creating user when not exists base role in database
         try {
-            var employeeAuthority = authorityService.getAuthority(AuthoritiesConstants.ROLE_EMPLOYEE.name());
+            var employeeAuthority = authorityService.getAuthority(AuthoritiesConstants.ROLE_USER.name());
             user.getAuthorities().add(employeeAuthority);
         } catch (NotFoundException ex) {
             throw new AuthorityNotExistsException(translator.translate("authority.error.message"));
@@ -129,9 +129,9 @@ class UserServiceImpl implements UserService {
                 .orElseThrow(() -> exceptionUtils.userNotFound(userId));
         var authority = authorityService.getAuthority(role);
 
-        if (authority.getName().equals(AuthoritiesConstants.ROLE_EMPLOYEE.name()))
+        if (authority.getName().equals(AuthoritiesConstants.ROLE_USER.name()))
             throw new InvalidDataException(translator.translate("common.actionNotAllowed.title"),
-                    translator.translate("user.notAllowed.removeEmployeeAuthority.message"));
+                    translator.translate("user.notAllowed.removeBaseAuthority.message"));
 
         user.getAuthorities().remove(authority);
         userRepository.save(user);

@@ -58,17 +58,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/categories/**",
                         "/units/**",
                         "/products/**")
-                        .hasAuthority(AuthoritiesConstants.ROLE_SUPERVISOR.name())
+                        .hasAuthority(AuthoritiesConstants.ROLE_MODERATOR.name())
                 .mvcMatchers(HttpMethod.PATCH,
                         "/users/role",
                         "/categories/**",
                         "/units/**",
                         "/products/**")
-                        .hasAuthority(AuthoritiesConstants.ROLE_SUPERVISOR.name())
+                        .hasAuthority(AuthoritiesConstants.ROLE_MODERATOR.name())
                 .mvcMatchers(HttpMethod.GET,
                         "/categories",
                         "/products")
-                        .hasAuthority(AuthoritiesConstants.ROLE_EMPLOYEE.name())
+                        .hasAuthority(AuthoritiesConstants.ROLE_USER.name())
                 .anyRequest()
                 .authenticated()
         .and()
