@@ -1,6 +1,7 @@
 package pl.kubaretip.cpo.api.security.jwt;
 
 import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,8 +36,8 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             try {
                 var authentication = jwtUtil.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-            } catch (JWTDecodeException ex) {
-                log.error("INVALID TOKEN {}", authorizationHeaderValue);
+            } catch (JWTDecodeException | TokenExpiredException ex) {
+                log.error("Invalid token or expired {}", authorizationHeaderValue);
             }
         }
         chain.doFilter(request, response);
