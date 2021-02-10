@@ -10,3 +10,5 @@ insert into authority(name, view_name)
 values ('ROLE_MODERATOR', 'Moderator');
 insert into authority(name, view_name)
 values ('ROLE_USER', 'User');
+insert into authority(name, view_name)
+values ('ROLE_MARKETER', 'Marketer')
