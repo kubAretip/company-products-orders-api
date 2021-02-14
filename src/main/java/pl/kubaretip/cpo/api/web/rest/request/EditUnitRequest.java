@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.kubaretip.cpo.api.dto.UnitDTO;
-import pl.kubaretip.cpo.api.validation.groups.Pk;
 
 import javax.validation.constraints.NotNull;
 
@@ -13,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class EditUnitRequest extends NewUnitRequest {
 
-    @NotNull(message = "{validation.unit.id.notNull}", groups = {Pk.class})
+    @NotNull(message = "{validation.unit.id.notNull}")
     private Long id;
 
     @Override
