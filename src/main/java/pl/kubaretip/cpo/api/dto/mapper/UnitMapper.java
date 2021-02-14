@@ -9,5 +9,4 @@ public interface UnitMapper {
 
     UnitDTO mapToDTO(Unit entity);
 
-    Unit mapToEntity(UnitDTO dto);
 }

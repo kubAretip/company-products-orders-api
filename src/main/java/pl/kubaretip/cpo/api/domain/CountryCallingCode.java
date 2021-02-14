@@ -1,16 +1,22 @@
 package pl.kubaretip.cpo.api.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
-import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Table
 @Entity
 @Getter
 @Setter
-public class CountryCallingCode implements Serializable {
+@NoArgsConstructor
+@AllArgsConstructor
+public class CountryCallingCode {
 
     @Id
     @Column(length = 64, nullable = false, unique = true)

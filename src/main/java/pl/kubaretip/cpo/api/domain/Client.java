@@ -34,6 +34,6 @@ public class Client {
     private String phoneNumber;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    private Set<Address> deliveryAddresses;
+    private Set<Address> addresses;
 
 }

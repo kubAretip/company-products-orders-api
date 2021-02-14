@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import pl.kubaretip.cpo.api.domain.Client;
 import pl.kubaretip.cpo.api.dto.ClientDTO;
 import pl.kubaretip.cpo.api.dto.mapper.AddressMapper;
-import pl.kubaretip.cpo.api.dto.mapper.ClientMapper;
 import pl.kubaretip.cpo.api.exception.AlreadyExistsException;
 import pl.kubaretip.cpo.api.exception.NotFoundException;
 import pl.kubaretip.cpo.api.repository.ClientRepository;
@@ -18,21 +17,18 @@ public class ClientServiceImpl implements ClientService {
     private final ClientRepository clientRepository;
     private final Translator translator;
     private final AddressMapper addressMapper;
-    private final ClientMapper clientMapper;
 
     public ClientServiceImpl(ClientRepository clientRepository,
                              Translator translator,
-                             AddressMapper addressMapper,
-                             ClientMapper clientMapper) {
+                             AddressMapper addressMapper) {
         this.clientRepository = clientRepository;
         this.translator = translator;
         this.addressMapper = addressMapper;
-        this.clientMapper = clientMapper;
     }
 
 
     @Override
-    public ClientDTO createClient(ClientDTO clientDTO) {
+    public Client createClient(ClientDTO clientDTO) {
 
         if (clientRepository.existsByCompanyNameIgnoreCase(clientDTO.getCompanyName())) {
             throw new AlreadyExistsException(translator.translate("common.alreadyExists.title"),
@@ -62,11 +58,10 @@ public class ClientServiceImpl implements ClientService {
         client.setEmail(clientDTO.getEmail().toLowerCase());
         client.setPhoneNumber(clientDTO.getPhoneNumber());
         client.setCompanyName(clientDTO.getCompanyName());
-        var addresses = addressMapper.mapToEntityList(clientDTO.getDeliveryAddresses());
+        var addresses = addressMapper.mapToEntityList(clientDTO.getAddresses());
         addresses.forEach(address -> address.setClient(client));
-        client.setDeliveryAddresses(addresses);
-        clientRepository.save(client);
-        return clientMapper.mapToDTO(client);
+        client.setAddresses(addresses);
+        return clientRepository.save(client);
     }
 
     @Override

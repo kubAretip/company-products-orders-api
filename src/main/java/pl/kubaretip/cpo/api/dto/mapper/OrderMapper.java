@@ -8,7 +8,7 @@ import pl.kubaretip.cpo.api.dto.OrderDTO;
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
 
-    @Mapping(ignore = true, target = "client.deliveryAddresses")
+    @Mapping(ignore = true, target = "client.addresses")
     OrderDTO mapToDTO(Order entity);
 
 }

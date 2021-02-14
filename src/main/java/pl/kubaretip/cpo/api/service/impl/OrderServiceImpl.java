@@ -73,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
                 })
                 .collect(Collectors.toSet());
 
-        var deliveryAddress = client.getDeliveryAddresses()
+        var deliveryAddress = client.getAddresses()
                 .stream()
                 .filter(address -> address.getId().equals(orderDTO.getDeliveryAddress().getId()))
                 .findFirst()

@@ -42,9 +42,9 @@ public class UserController {
     }
 
     @PatchMapping("/activate")
-    public ResponseEntity<UserDTO> activateUser(@Valid @RequestBody ActivateUserRequest activateUserRequest) {
-        var user = userService.activateUser(activateUserRequest.getUsername(),
-                activateUserRequest.getPassword(), activateUserRequest.getActivationKey());
+    public ResponseEntity<UserDTO> activateUser(@Valid @RequestBody ActivateUserRequest request) {
+        var user = userService.activateUser(request.getUsername(),
+                request.getPassword(), request.getActivationKey());
         return ResponseEntity.ok(userMapper.mapToDTO(user));
     }
 
