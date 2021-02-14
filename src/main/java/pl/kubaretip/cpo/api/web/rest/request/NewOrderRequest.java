@@ -38,7 +38,7 @@ public class NewOrderRequest {
     @Getter
     @Setter
     @NoArgsConstructor
-    static class ProductInOrder {
+    private static class ProductInOrder {
         @NotNull
         private Long productId;
 

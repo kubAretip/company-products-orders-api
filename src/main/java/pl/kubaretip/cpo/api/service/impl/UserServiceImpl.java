@@ -5,15 +5,14 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.kubaretip.cpo.api.constants.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.domain.User;
 import pl.kubaretip.cpo.api.dto.UserDTO;
-import pl.kubaretip.cpo.api.dto.mapper.UserMapper;
 import pl.kubaretip.cpo.api.exception.AlreadyExistsException;
 import pl.kubaretip.cpo.api.exception.AuthorityNotExistsException;
 import pl.kubaretip.cpo.api.exception.InvalidDataException;
 import pl.kubaretip.cpo.api.exception.NotFoundException;
 import pl.kubaretip.cpo.api.repository.UserRepository;
-import pl.kubaretip.cpo.api.constants.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.service.AuthorityService;
 import pl.kubaretip.cpo.api.service.UserService;
 import pl.kubaretip.cpo.api.util.ExceptionUtils;
@@ -27,27 +26,24 @@ class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserMapper userMapper;
     private final Translator translator;
     private final ExceptionUtils exceptionUtils;
     private final AuthorityService authorityService;
 
     public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder,
-                           UserMapper userMapper,
                            Translator translator,
                            ExceptionUtils exceptionUtils,
                            AuthorityService authorityService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.userMapper = userMapper;
         this.translator = translator;
         this.exceptionUtils = exceptionUtils;
         this.authorityService = authorityService;
     }
 
     @Override
-    public UserDTO createUser(UserDTO userDTO) {
+    public User createUser(UserDTO userDTO) {
 
         log.debug("Creating new user");
         if (userRepository.existsByEmailIgnoreCase(userDTO.getEmail())) {
@@ -89,11 +85,11 @@ class UserServiceImpl implements UserService {
         log.debug(user.getUsername() + " account activation key: " + activationKey);
         userRepository.save(user);
         // TODO after successful creating new user send mail with activation key
-        return userMapper.mapToDTO(user);
+        return user;
     }
 
     @Override
-    public UserDTO activateUser(String username, String password, String activationKey) {
+    public User activateUser(String username, String password, String activationKey) {
 
         var user = userRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(() -> exceptionUtils.userNotFound(username));
@@ -108,7 +104,7 @@ class UserServiceImpl implements UserService {
             user.setPassword(passwordEncoder.encode(password));
             user.setActivated(true);
             userRepository.save(user);
-            return userMapper.mapToDTO(user);
+            return user;
         } else {
             throw new InvalidDataException(translator.translate("user.alreadyActivated.title"),
                     translator.translate("user.incorrect.activationKey.message"));

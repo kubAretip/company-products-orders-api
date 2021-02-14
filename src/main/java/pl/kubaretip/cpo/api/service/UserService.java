@@ -4,9 +4,9 @@ import pl.kubaretip.cpo.api.domain.User;
 import pl.kubaretip.cpo.api.dto.UserDTO;
 
 public interface UserService {
-    UserDTO createUser(UserDTO userDTO);
+    User createUser(UserDTO userDTO);
 
-    UserDTO activateUser(String username, String password, String activationKey);
+    User activateUser(String username, String password, String activationKey);
 
     void assignUserToNewAuthority(Long userId, String role);
 
