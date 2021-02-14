@@ -4,8 +4,10 @@ create table if not exists client_order
     client_id           bigint not null,
     created_by_user_id  bigint not null,
     accepted_by_user_id bigint,
+    delivery_address_id bigint not null,
     primary key (id),
     foreign key (client_id) references client (id),
     foreign key (created_by_user_id) references user (id),
-    foreign key (accepted_by_user_id) references user (id)
+    foreign key (accepted_by_user_id) references user (id),
+    foreign key (delivery_address_id) references address (id)
 );

@@ -31,4 +31,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "WHERE p.id = :id AND p.deleted = false")
     boolean existsById(@Param("id") Long productId);
 
+    @Query("SELECT p FROM Product p WHERE p.id in :ids AND p.deleted = false")
+    List<Product> findByIdIn(@Param("ids") List<Long> productsIds);
+
+    @Query("SELECT " +
+            "CASE WHEN COUNT(p) > 0 THEN true ELSE false END " +
+            "FROM Product p " +
+            "WHERE p.id in :ids AND p.deleted = false")
+    boolean existsByIdIn(@Param("ids") List<Long> productIds);
+
 }

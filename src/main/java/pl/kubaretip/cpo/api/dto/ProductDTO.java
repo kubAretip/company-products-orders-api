@@ -35,4 +35,7 @@ public class ProductDTO {
     private UnitDTO unit;
 
 
+    public ProductDTO(Long id) {
+        this.id = id;
+    }
 }

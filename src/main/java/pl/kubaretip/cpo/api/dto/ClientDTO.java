@@ -42,4 +42,7 @@ public class ClientDTO {
     @NotEmpty(message = "{validation.client.deliveryAddress.notEmpty}")
     private List<@Valid AddressDTO> deliveryAddresses;
 
+    public ClientDTO(Long id) {
+        this.id = id;
+    }
 }

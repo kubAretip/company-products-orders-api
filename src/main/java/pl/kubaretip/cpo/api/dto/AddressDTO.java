@@ -37,4 +37,7 @@ public class AddressDTO {
     @Size(max = 50, message = "{validation.address.city.size}")
     private String city;
 
+    public AddressDTO(Long id) {
+        this.id = id;
+    }
 }

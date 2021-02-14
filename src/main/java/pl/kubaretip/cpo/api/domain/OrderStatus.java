@@ -23,10 +23,7 @@ public class OrderStatus {
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumns({
-            @JoinColumn(name = "status", referencedColumnName = "name", insertable = false, updatable = false),
-            @JoinColumn(name = "status_locale", referencedColumnName = "locale", insertable = false, updatable = false)
-    })
+    @JoinColumn(name = "status_id", nullable = false)
     private Status status;
 
     @Column(name = "status_date", nullable = false)

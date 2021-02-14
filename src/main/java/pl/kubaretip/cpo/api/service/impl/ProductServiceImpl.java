@@ -86,9 +86,20 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    Product findProductById(long productId) {
+    @Override
+    public Product findProductById(long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> productWithIdNotFound(productId));
+    }
+
+    @Override
+    public boolean existsProductsWithIds(List<Long> productsIds) {
+        return productRepository.existsByIdIn(productsIds);
+    }
+
+    @Override
+    public List<Product> findProductsByIds(List<Long> productsIds) {
+        return productRepository.findByIdIn(productsIds);
     }
 
     private AlreadyExistsException productWithNameAlreadyExists(String name) {

@@ -30,10 +30,14 @@ public class Order {
     @JoinColumn(name = "accepted_by_user_id")
     private User acceptedBy;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", targetEntity = OrderStatus.class)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "delivery_address_id", nullable = false)
+    private Address deliveryAddress;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", targetEntity = OrderStatus.class, cascade = {CascadeType.PERSIST})
     private Set<OrderStatus> orderStatus;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", targetEntity = OrderProduct.class)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", targetEntity = OrderProduct.class, cascade = {CascadeType.PERSIST})
     private Set<OrderProduct> orderProducts;
 
 }

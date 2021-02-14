@@ -136,4 +136,11 @@ class UserServiceImpl implements UserService {
         user.getAuthorities().remove(authority);
         userRepository.save(user);
     }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsernameIgnoreCase(username)
+                .orElseThrow(() -> exceptionUtils.userNotFound(username));
+    }
+
 }

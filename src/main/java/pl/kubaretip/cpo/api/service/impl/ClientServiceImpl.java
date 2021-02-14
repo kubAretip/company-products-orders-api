@@ -7,6 +7,7 @@ import pl.kubaretip.cpo.api.dto.ClientDTO;
 import pl.kubaretip.cpo.api.dto.mapper.AddressMapper;
 import pl.kubaretip.cpo.api.dto.mapper.ClientMapper;
 import pl.kubaretip.cpo.api.exception.AlreadyExistsException;
+import pl.kubaretip.cpo.api.exception.NotFoundException;
 import pl.kubaretip.cpo.api.repository.ClientRepository;
 import pl.kubaretip.cpo.api.service.ClientService;
 import pl.kubaretip.cpo.api.util.Translator;
@@ -67,5 +68,12 @@ public class ClientServiceImpl implements ClientService {
         clientRepository.save(client);
         return clientMapper.mapToDTO(client);
     }
+
+    @Override
+    public Client findClientById(long id) {
+        return clientRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Not found", "Client not found"));
+    }
+
 
 }

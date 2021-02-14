@@ -10,13 +10,22 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"name", "locale"})
+})
 @Entity
 @Immutable
 public class Status {
 
-    @EmbeddedId
-    private StatusPK id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 25)
+    private String name;
+
+    @Column(nullable = false, length = 11)
+    private String locale;
 
     @Column(nullable = false, length = 50)
     private String title;
