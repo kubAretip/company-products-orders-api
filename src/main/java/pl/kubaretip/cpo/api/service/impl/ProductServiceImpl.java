@@ -3,7 +3,6 @@ package pl.kubaretip.cpo.api.service.impl;
 import org.springframework.stereotype.Service;
 import pl.kubaretip.cpo.api.domain.Product;
 import pl.kubaretip.cpo.api.dto.ProductDTO;
-import pl.kubaretip.cpo.api.dto.mapper.ProductMapper;
 import pl.kubaretip.cpo.api.exception.AlreadyExistsException;
 import pl.kubaretip.cpo.api.exception.NotFoundException;
 import pl.kubaretip.cpo.api.repository.ProductRepository;
@@ -20,41 +19,32 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
     private final UnitService unitService;
-    private final ProductMapper productMapper;
     private final Translator translator;
 
     public ProductServiceImpl(ProductRepository productRepository,
                               CategoryService categoryService,
                               UnitService unitService,
-                              ProductMapper productMapper,
                               Translator translator) {
         this.productRepository = productRepository;
         this.categoryService = categoryService;
         this.unitService = unitService;
-        this.productMapper = productMapper;
         this.translator = translator;
     }
 
     @Override
-    public List<ProductDTO> getAllProducts() {
-        return productMapper.mapToListDTO(productRepository.findAll());
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
     }
 
     @Override
-    public ProductDTO createProduct(ProductDTO productDTO) {
+    public Product createProduct(ProductDTO productDTO) {
 
         if (productRepository.existsByName(productDTO.getName()))
             throw productWithNameAlreadyExists(productDTO.getName());
 
         var category = categoryService.getCategoryById(productDTO.getCategory().getId());
         var unit = unitService.getUnitById(productDTO.getUnit().getId());
-
-        productDTO.setId(null);
-        productDTO.setCategory(category);
-        productDTO.setUnit(unit);
-        var product = productMapper.mapToEntity(productDTO);
-        productRepository.save(product);
-        return productMapper.mapToDTO(product);
+        return productRepository.save(new Product(productDTO.getName(), category, unit));
     }
 
     @Override
@@ -65,25 +55,28 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO modifyProduct(ProductDTO productDTO) {
+    public Product modifyProduct(ProductDTO productDTO) {
 
-        if (productRepository.existsById(productDTO.getId())) {
-            productRepository.findByName(productDTO.getName())
-                    .ifPresent(existingProduct -> {
-                        if (!existingProduct.getId().equals(productDTO.getId()))
-                            throw productWithNameAlreadyExists(productDTO.getName());
-                    });
+        var product = productRepository.findByName(productDTO.getName())
+                .map(existingProduct -> {
+                    if (!existingProduct.getId().equals(productDTO.getId()))
+                        throw productWithNameAlreadyExists(productDTO.getName());
+                    return existingProduct;
+                })
+                .or(() -> productRepository.findById(productDTO.getId()))
+                .orElseThrow(() -> productWithIdNotFound(productDTO.getId()));
 
-            var category = categoryService.getCategoryById(productDTO.getCategory().getId());
-            var unit = unitService.getUnitById(productDTO.getUnit().getId());
-            productDTO.setUnit(unit);
-            productDTO.setCategory(category);
-            var product = productMapper.mapToEntity(productDTO);
-            productRepository.save(product);
-            return productMapper.mapToDTO(product);
-        } else {
-            throw productWithIdNotFound(productDTO.getId());
+        product.setName(productDTO.getName());
+
+        if (!product.getCategory().getId().equals(productDTO.getCategory().getId())) {
+            product.setCategory(categoryService.getCategoryById(productDTO.getCategory().getId()));
         }
+
+        if (!product.getUnit().getId().equals(productDTO.getUnit().getId())) {
+            product.setUnit(unitService.getUnitById(productDTO.getUnit().getId()));
+        }
+
+        return productRepository.save(product);
     }
 
     @Override

@@ -1,17 +1,18 @@
 package pl.kubaretip.cpo.api.service;
 
+import pl.kubaretip.cpo.api.domain.Category;
 import pl.kubaretip.cpo.api.dto.CategoryDTO;
 
 import java.util.List;
 
 public interface CategoryService {
-    List<CategoryDTO> getAllCategories();
+    List<Category> getAllCategories();
 
-    CategoryDTO getCategoryById(long categoryId);
+    Category getCategoryById(long categoryId);
 
-    CategoryDTO createCategory(CategoryDTO categoryDTO);
+    Category createCategory(CategoryDTO categoryDTO);
 
     void markCategoryAsDeleted(long categoryId);
 
-    CategoryDTO modifyCategory(long categoryId, CategoryDTO categoryDTO);
+    Category modifyCategory(CategoryDTO categoryDTO);
 }

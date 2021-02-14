@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import pl.kubaretip.cpo.api.domain.Unit;
 import pl.kubaretip.cpo.api.dto.UnitDTO;
-import pl.kubaretip.cpo.api.dto.mapper.UnitMapper;
 import pl.kubaretip.cpo.api.exception.AlreadyExistsException;
 import pl.kubaretip.cpo.api.exception.NotFoundException;
 import pl.kubaretip.cpo.api.repository.UnitRepository;
@@ -15,24 +14,21 @@ import pl.kubaretip.cpo.api.util.Translator;
 public class UnitServiceImpl implements UnitService {
 
     private final UnitRepository unitRepository;
-    private final UnitMapper unitMapper;
     private final Translator translator;
 
     public UnitServiceImpl(UnitRepository unitRepository,
-                           UnitMapper unitMapper,
                            Translator translator) {
         this.unitRepository = unitRepository;
-        this.unitMapper = unitMapper;
         this.translator = translator;
     }
 
     @Override
-    public UnitDTO getUnitById(long unitId) {
-        return unitMapper.mapToDTO(findUnitById(unitId));
+    public Unit getUnitById(long unitId) {
+        return findUnitById(unitId);
     }
 
     @Override
-    public UnitDTO createUnit(UnitDTO unitDTO) {
+    public Unit createUnit(UnitDTO unitDTO) {
 
         if (unitRepository.existsByName(unitDTO.getName()))
             throw unitWithNameAlreadyExists(unitDTO.getName());
@@ -40,13 +36,10 @@ public class UnitServiceImpl implements UnitService {
         if (unitRepository.existsBySymbol(unitDTO.getSymbol()))
             throw unitWithSymbolAlreadyExists(unitDTO.getSymbol());
 
-        unitDTO.setId(null);
-        unitDTO.setName(StringUtils.capitalize(unitDTO.getName().toLowerCase()));
-        unitDTO.setSymbol(unitDTO.getSymbol().toUpperCase());
-
-        var unit = unitMapper.mapToEntity(unitDTO);
-        unitRepository.save(unit);
-        return unitMapper.mapToDTO(unit);
+        var newUnit = new Unit();
+        newUnit.setName(StringUtils.capitalize(unitDTO.getName().toLowerCase()));
+        newUnit.setSymbol(unitDTO.getSymbol().toUpperCase());
+        return unitRepository.save(newUnit);
     }
 
 
@@ -58,7 +51,7 @@ public class UnitServiceImpl implements UnitService {
     }
 
     @Override
-    public UnitDTO modifyUnit(UnitDTO unitDTO) {
+    public Unit modifyUnit(UnitDTO unitDTO) {
 
         var unit = findUnitById(unitDTO.getId());
 
@@ -76,8 +69,7 @@ public class UnitServiceImpl implements UnitService {
 
         unit.setName(StringUtils.capitalize(unitDTO.getName().toLowerCase()));
         unit.setSymbol(unitDTO.getSymbol().toUpperCase());
-        unitRepository.save(unit);
-        return unitMapper.mapToDTO(unit);
+        return unitRepository.save(unit);
     }
 
     Unit findUnitById(long unitId) {

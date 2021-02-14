@@ -1,13 +1,14 @@
 package pl.kubaretip.cpo.api.service;
 
+import pl.kubaretip.cpo.api.domain.Unit;
 import pl.kubaretip.cpo.api.dto.UnitDTO;
 
 public interface UnitService {
-    UnitDTO getUnitById(long unitId);
+    Unit getUnitById(long unitId);
 
-    UnitDTO createUnit(UnitDTO unitDTO);
+    Unit createUnit(UnitDTO unitDTO);
 
     void markUnitAsDeleted(long unitId);
 
-    UnitDTO modifyUnit(UnitDTO unitDTO);
+    Unit modifyUnit(UnitDTO unitDTO);
 }

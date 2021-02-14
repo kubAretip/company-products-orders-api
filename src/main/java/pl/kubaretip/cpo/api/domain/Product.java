@@ -31,4 +31,9 @@ public class Product {
     @Column(nullable = false)
     private boolean deleted = false;
 
+    public Product(String name, Category category, Unit unit) {
+        this.name = name;
+        this.category = category;
+        this.unit = unit;
+    }
 }

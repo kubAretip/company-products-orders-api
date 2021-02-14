@@ -1,16 +1,16 @@
 package pl.kubaretip.cpo.api.web.rest;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.kubaretip.cpo.api.dto.CategoryDTO;
+import pl.kubaretip.cpo.api.dto.mapper.CategoryMapper;
 import pl.kubaretip.cpo.api.service.CategoryService;
 import pl.kubaretip.cpo.api.util.ExceptionUtils;
-import pl.kubaretip.cpo.api.validation.groups.Pk;
+import pl.kubaretip.cpo.api.web.rest.request.EditCategoryRequest;
+import pl.kubaretip.cpo.api.web.rest.request.NewCategoryRequest;
 
 import javax.validation.Valid;
-import javax.validation.groups.Default;
 import java.util.List;
 
 @RestController
@@ -19,50 +19,51 @@ public class CategoryController {
 
     private final CategoryService categoryService;
     private final ExceptionUtils exceptionUtils;
+    private final CategoryMapper categoryMapper;
 
     public CategoryController(CategoryService categoryService,
-                              ExceptionUtils exceptionUtils) {
+                              ExceptionUtils exceptionUtils,
+                              CategoryMapper categoryMapper) {
         this.categoryService = categoryService;
         this.exceptionUtils = exceptionUtils;
+        this.categoryMapper = categoryMapper;
     }
 
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> getAll() {
-        return ResponseEntity.ok(categoryService.getAllCategories());
+        return ResponseEntity.ok(categoryMapper.mapToDTOList(categoryService.getAllCategories()));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDTO> getById(@PathVariable("id") long categoryId) {
-        return ResponseEntity.ok(categoryService.getCategoryById(categoryId));
+        return ResponseEntity.ok(categoryMapper.mapToDTO(categoryService.getCategoryById(categoryId)));
     }
 
     @PostMapping
-    public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryDTO categoryDTO,
+    public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody NewCategoryRequest request,
                                                       UriComponentsBuilder uriComponentsBuilder) {
-        var category = categoryService.createCategory(categoryDTO);
+        var category = categoryService.createCategory(request.toDTO());
         var locationURI = uriComponentsBuilder.path("/categories/{id}")
                 .buildAndExpand(category.getId()).toUri();
-        return ResponseEntity.created(locationURI).body(category);
+        return ResponseEntity.created(locationURI).body(categoryMapper.mapToDTO(category));
     }
 
 
-    @PatchMapping(path = "/{id}", params = {"remove"})
-    public ResponseEntity<Void> markCategoryAsDeleted(@PathVariable("id") long categoryId,
-                                                      @RequestParam("remove") boolean remove) {
-
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<Void> markCategoryAsDeleted(@PathVariable("id") long categoryId) {
         categoryService.markCategoryAsDeleted(categoryId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.accepted().build();
     }
 
 
     @PatchMapping(path = "/{id}")
     public ResponseEntity<CategoryDTO> editCategory(@PathVariable("id") long categoryId,
-                                                    @Validated({Default.class, Pk.class}) @RequestBody CategoryDTO categoryDTO) {
-
-        if (categoryDTO.getId() != categoryId)
+                                                    @Valid @RequestBody EditCategoryRequest request) {
+        if (request.getId() != categoryId) {
             throw exceptionUtils.pathIdNotEqualsBodyId();
-
-        return ResponseEntity.ok(categoryService.modifyCategory(categoryId, categoryDTO));
+        }
+        var resultCategory = categoryService.modifyCategory(request.toDTO());
+        return ResponseEntity.ok(categoryMapper.mapToDTO(resultCategory));
     }
 
 

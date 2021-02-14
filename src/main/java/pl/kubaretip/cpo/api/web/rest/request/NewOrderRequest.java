@@ -26,7 +26,7 @@ public class NewOrderRequest {
     private List<@Valid ProductInOrder> products;
 
     public OrderDTO toDTO() {
-        var orderProductsDTO = products.stream()
+        var orderProductsDTO = this.products.stream()
                 .map(productInOrder -> new OrderProductDTO(productInOrder.getQuantity(),
                         new ProductDTO(productInOrder.getProductId())))
                 .collect(Collectors.toList());

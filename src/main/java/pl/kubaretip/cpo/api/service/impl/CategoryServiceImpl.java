@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import pl.kubaretip.cpo.api.domain.Category;
 import pl.kubaretip.cpo.api.dto.CategoryDTO;
-import pl.kubaretip.cpo.api.dto.mapper.CategoryMapper;
 import pl.kubaretip.cpo.api.exception.AlreadyExistsException;
 import pl.kubaretip.cpo.api.exception.NotFoundException;
 import pl.kubaretip.cpo.api.repository.CategoryRepository;
@@ -17,29 +16,26 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final CategoryMapper categoryMapper;
     private final Translator translator;
 
     public CategoryServiceImpl(CategoryRepository categoryRepository,
-                               CategoryMapper categoryMapper,
                                Translator translator) {
         this.categoryRepository = categoryRepository;
-        this.categoryMapper = categoryMapper;
         this.translator = translator;
     }
 
     @Override
-    public List<CategoryDTO> getAllCategories() {
-        return categoryMapper.mapToDTOList(categoryRepository.findAll());
+    public List<Category> getAllCategories() {
+        return categoryRepository.findAll();
     }
 
     @Override
-    public CategoryDTO getCategoryById(long categoryId) {
-        return categoryMapper.mapToDTO(findCategoryById(categoryId));
+    public Category getCategoryById(long categoryId) {
+        return findCategoryById(categoryId);
     }
 
     @Override
-    public CategoryDTO createCategory(CategoryDTO categoryDTO) {
+    public Category createCategory(CategoryDTO categoryDTO) {
 
         if (categoryRepository.existsByName(categoryDTO.getName())) {
             throw categoryWithNameAlreadyExists(categoryDTO.getName());
@@ -49,7 +45,7 @@ public class CategoryServiceImpl implements CategoryService {
         newCategory.setName(StringUtils.capitalize(categoryDTO.getName().toLowerCase()));
         categoryRepository.save(newCategory);
 
-        return categoryMapper.mapToDTO(newCategory);
+        return newCategory;
     }
 
     @Override
@@ -60,9 +56,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDTO modifyCategory(long categoryId, CategoryDTO categoryDTO) {
+    public Category modifyCategory(CategoryDTO categoryDTO) {
 
-        var category = findCategoryById(categoryId);
+        var category = findCategoryById(categoryDTO.getId());
 
         categoryRepository.findByName(categoryDTO.getName())
                 .ifPresent(exists -> {
@@ -73,7 +69,8 @@ public class CategoryServiceImpl implements CategoryService {
 
         category.setName(StringUtils.capitalize(categoryDTO.getName().toLowerCase()));
         categoryRepository.save(category);
-        return categoryMapper.mapToDTO(category);
+
+        return category;
     }
 
     private AlreadyExistsException categoryWithNameAlreadyExists(String categoryName) {

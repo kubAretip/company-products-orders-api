@@ -6,13 +6,13 @@ import pl.kubaretip.cpo.api.dto.ProductDTO;
 import java.util.List;
 
 public interface ProductService {
-    List<ProductDTO> getAllProducts();
+    List<Product> getAllProducts();
 
-    ProductDTO createProduct(ProductDTO productDTO);
+    Product createProduct(ProductDTO productDTO);
 
     void markProductAsDeleted(long productId);
 
-    ProductDTO modifyProduct(ProductDTO productDTO);
+    Product modifyProduct(ProductDTO productDTO);
 
     Product findProductById(long productId);
 
