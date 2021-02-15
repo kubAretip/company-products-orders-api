@@ -66,6 +66,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/products/**")
                         .hasAuthority(AuthoritiesConstants.ROLE_MODERATOR.name())
                 .mvcMatchers(HttpMethod.GET,
+                        "/user-activation-reports/**")
+                        .hasAuthority(AuthoritiesConstants.ROLE_MODERATOR.name())
+                .mvcMatchers(HttpMethod.GET,
                         "/categories",
                         "/products")
                         .hasAuthority(AuthoritiesConstants.ROLE_USER.name())
