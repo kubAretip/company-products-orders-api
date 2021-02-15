@@ -6,3 +6,22 @@ server:
 spring:
   profiles:
     active: @activatedProfile@
+  mail:
+    host: ${MAIL_HOST}
+    port: 587
+    password: ${MAIL_PASSWORD}
+    username: ${MAIL_USERNAME}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+  task:
+    execution:
+      thread-name-prefix: cpo-api-task-
+      pool:
+        core-size: 2
+        max-size: 25
+        queue-capacity: 10000

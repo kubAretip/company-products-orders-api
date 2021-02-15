@@ -1,6 +1,5 @@
 package pl.kubaretip.cpo.api.service.impl;
 
-import com.itextpdf.text.DocumentException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -9,18 +8,14 @@ import org.springframework.stereotype.Service;
 import pl.kubaretip.cpo.api.constants.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.domain.User;
 import pl.kubaretip.cpo.api.dto.UserDTO;
-import pl.kubaretip.cpo.api.exception.AlreadyExistsException;
-import pl.kubaretip.cpo.api.exception.AuthorityNotExistsException;
-import pl.kubaretip.cpo.api.exception.InvalidDataException;
-import pl.kubaretip.cpo.api.exception.NotFoundException;
+import pl.kubaretip.cpo.api.exception.*;
 import pl.kubaretip.cpo.api.repository.UserRepository;
 import pl.kubaretip.cpo.api.service.AuthorityService;
-import pl.kubaretip.cpo.api.service.UserActivationReportService;
+import pl.kubaretip.cpo.api.service.UserActivationService;
 import pl.kubaretip.cpo.api.service.UserService;
 import pl.kubaretip.cpo.api.util.ExceptionUtils;
+import pl.kubaretip.cpo.api.util.SecurityUtils;
 import pl.kubaretip.cpo.api.util.Translator;
-
-import java.io.FileNotFoundException;
 
 import static pl.kubaretip.cpo.api.constants.AppConstants.USER_ACTIVATION_KEY_LENGTH;
 
@@ -33,20 +28,20 @@ class UserServiceImpl implements UserService {
     private final Translator translator;
     private final ExceptionUtils exceptionUtils;
     private final AuthorityService authorityService;
-    private final UserActivationReportService userActivationReportService;
+    private final UserActivationService userActivationService;
 
     public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder,
                            Translator translator,
                            ExceptionUtils exceptionUtils,
                            AuthorityService authorityService,
-                           UserActivationReportService userActivationReportService) {
+                           UserActivationService userActivationService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.translator = translator;
         this.exceptionUtils = exceptionUtils;
         this.authorityService = authorityService;
-        this.userActivationReportService = userActivationReportService;
+        this.userActivationService = userActivationService;
     }
 
     @Override
@@ -92,13 +87,12 @@ class UserServiceImpl implements UserService {
         log.debug(user.getUsername() + " account activation key: " + activationKey);
         userRepository.save(user);
 
-        try {
-            userActivationReportService.createActivationUserReport(user, activationKey);
-        } catch (FileNotFoundException | DocumentException e) {
-            e.printStackTrace();
-        }
+        userActivationService.generateUserActivationReport(user, activationKey);
 
-        // TODO after successful creating new user send mail with activation key
+        var accountCreatedByModerator = SecurityUtils.getCurrentUserLogin()
+                .flatMap(userRepository::findByUsernameIgnoreCase)
+                .orElseThrow(() -> new UserResourceException("Current user not found"));
+        userActivationService.sendUserActivationMail(user, activationKey, accountCreatedByModerator);
         return user;
     }
 
