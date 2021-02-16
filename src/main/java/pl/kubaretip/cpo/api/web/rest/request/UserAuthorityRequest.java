@@ -12,10 +12,10 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class UserAuthorityRequest {
 
-    @NotNull
+    @NotNull(message = "{validation.authority.userId.notNull}")
     private Long userId;
 
-    @NotBlank
+    @NotBlank(message = "{validation.authority.authorityName.notBlank}")
     private String authorityName;
 
 }

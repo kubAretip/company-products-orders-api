@@ -6,6 +6,7 @@ import lombok.Setter;
 import pl.kubaretip.cpo.api.dto.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -16,13 +17,13 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class NewOrderRequest {
 
-    @NotNull
+    @NotNull(message = "{validation.order.clientId.notNull}")
     private Long clientId;
 
-    @NotNull
+    @NotNull(message = "{validation.order.deliveryAddressId.notNull}")
     private Long deliveryAddressId;
 
-    @NotEmpty
+    @NotEmpty(message = "{validation.order.products.notEmpty}")
     private List<@Valid ProductInOrder> products;
 
     public OrderDTO toDTO() {
@@ -39,10 +40,12 @@ public class NewOrderRequest {
     @Setter
     @NoArgsConstructor
     private static class ProductInOrder {
-        @NotNull
+
+        @NotNull(message = "{validation.order.products.productId.notNull}")
         private Long productId;
 
-        @NotNull
+        @NotNull(message = "{validation.order.products.quantity.notNull}")
+        @DecimalMin(value = "1", message = "{validation.order.products.quantity.decimalMin}")
         private Integer quantity;
     }
 
