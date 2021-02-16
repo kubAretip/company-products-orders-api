@@ -4,7 +4,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import pl.kubaretip.cpo.api.constants.StatusConstants;
 import pl.kubaretip.cpo.api.domain.OrderStatus;
-import pl.kubaretip.cpo.api.exception.NotFoundException;
+import pl.kubaretip.cpo.api.exception.StatusResourceException;
 import pl.kubaretip.cpo.api.repository.StatusRepository;
 import pl.kubaretip.cpo.api.service.OrderStatusService;
 import pl.kubaretip.cpo.api.util.Translator;
@@ -21,13 +21,11 @@ public class OrderStatusServiceImpl implements OrderStatusService {
         this.translator = translator;
     }
 
-
     @Override
     public OrderStatus getOrderStatus(StatusConstants status) {
         var createdStatus = statusRepository.findByNameIgnoreCaseAndLocaleIgnoreCase(status.name(),
                 LocaleContextHolder.getLocale().toLanguageTag())
-                .orElseThrow(() -> new NotFoundException(translator.translate("common.notFound.title"),
-                        "System error base status not found!"));
+                .orElseThrow(() -> new StatusResourceException(translator.translate("status.notFound.resource")));
         var orderStatus = new OrderStatus();
         orderStatus.setStatus(createdStatus);
         return orderStatus;

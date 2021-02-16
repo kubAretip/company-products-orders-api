@@ -21,7 +21,7 @@ public class BusinessLogicExceptionHandler {
                 .build();
     }
 
-    @ExceptionHandler({AuthorityNotExistsException.class, UserResourceException.class})
+    @ExceptionHandler({AuthorityNotExistsException.class, UserResourceException.class, StatusResourceException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Error handleAuthorityNotExists(BusinessLogicException ex, WebRequest request) {
         return Error.builder()
