@@ -1,5 +1,6 @@
 package pl.kubaretip.cpo.api.service;
 
+import pl.kubaretip.cpo.api.constants.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.domain.User;
 import pl.kubaretip.cpo.api.dto.UserDTO;
 
@@ -13,4 +14,6 @@ public interface UserService {
     void removeUserAuthority(Long userId, String role);
 
     User findByUsername(String username);
+
+    User findUserByIdAndAuthority(long userId, AuthoritiesConstants authority);
 }

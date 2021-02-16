@@ -19,4 +19,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUsernameIgnoreCase(String username);
 
+    @Query(value = "SELECT * FROM user u INNER JOIN user_authority ua on u.id = ua.user_id " +
+            "INNER JOIN authority a on a.name = ua.authority_name " +
+            "WHERE u.id = :id AND upper(a.name) = upper(:name) LIMIT 1",
+            nativeQuery = true)
+    Optional<User> findUserByUsernameAndAuthority(@Param("id") long userId, @Param("name") String authorityName);
+
 }

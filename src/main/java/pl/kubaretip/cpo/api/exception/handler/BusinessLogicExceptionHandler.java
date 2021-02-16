@@ -40,9 +40,9 @@ public class BusinessLogicExceptionHandler {
                 .build();
     }
 
-    @ExceptionHandler(InvalidDataException.class)
+    @ExceptionHandler({InvalidDataException.class, OrderStatusException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Error handleInvalidData(InvalidDataException ex, WebRequest request) {
+    public Error handleInvalidData(BusinessLogicException ex, WebRequest request) {
         return Error.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .title(ex.getTitle())

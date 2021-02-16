@@ -87,7 +87,7 @@ class UserServiceImpl implements UserService {
 
         var accountCreatedByModerator = SecurityUtils.getCurrentUserLogin()
                 .flatMap(userRepository::findByUsernameIgnoreCase)
-                .orElseThrow(() -> new UserResourceException("Current user not found"));
+                .orElseThrow(() -> new UserResourceException(translator.translate("user.notFound.userResource")));
         userActivationService.sendUserActivationMail(user, activationKey, accountCreatedByModerator);
         return user;
     }
@@ -141,6 +141,16 @@ class UserServiceImpl implements UserService {
     public User findByUsername(String username) {
         return userRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(() -> userNotFound(username));
+    }
+
+
+    @Override
+    public User findUserByIdAndAuthority(long userId, AuthoritiesConstants authority) {
+        return userRepository.findUserByUsernameAndAuthority(userId, authority.name())
+                .orElseThrow(() -> new NotFoundException(translator.translate("user.notFound.title"),
+                        translator.translate("user.notFound.id.authority",
+                                new String[]{String.valueOf(userId), authority.name()})
+                ));
     }
 
     private NotFoundException userNotFound(String username) {

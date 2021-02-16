@@ -27,3 +27,4 @@ logging:
               BasicBinder: TRACE
 jwt:
   base64-secret: c2VjcmV0
+  validity-time-in-seconds: 31556926 # during dev time 1 year is enough :)

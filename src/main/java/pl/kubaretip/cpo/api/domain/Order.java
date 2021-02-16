@@ -23,16 +23,19 @@ public class Order {
     private Client client;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by_user_id", nullable = false)
-    private User createdBy;
+    @JoinColumn(name = "marketer_user_id", nullable = false)
+    private User marketer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "accepted_by_user_id")
-    private User acceptedBy;
+    @JoinColumn(name = "supervisor_user_id")
+    private User supervisor;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_address_id", nullable = false)
     private Address deliveryAddress;
+
+    @Column(name = "additional_information", length = 2000)
+    private String additionalInformation;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", targetEntity = OrderStatus.class, cascade = {CascadeType.PERSIST})
     private Set<OrderStatus> orderStatus;

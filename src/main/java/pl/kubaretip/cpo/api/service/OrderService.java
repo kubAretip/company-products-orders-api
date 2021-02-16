@@ -5,4 +5,8 @@ import pl.kubaretip.cpo.api.dto.OrderDTO;
 
 public interface OrderService {
     Order createNewOrder(OrderDTO orderDTO);
+
+    void acceptOrder(OrderDTO orderDTO);
+
+    void rejectOrder(OrderDTO orderDTO);
 }

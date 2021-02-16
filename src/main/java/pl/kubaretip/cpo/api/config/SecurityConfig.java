@@ -73,8 +73,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/products")
                         .hasAuthority(AuthoritiesConstants.ROLE_USER.name())
                 .mvcMatchers(HttpMethod.POST,
-                        "/clients")
+                        "/clients",
+                        "/orders")
                         .hasAuthority(AuthoritiesConstants.ROLE_MARKETER.name())
+                .mvcMatchers(HttpMethod.PATCH,
+                        "/orders/{id}/accept",
+                        "/orders/{id}/reject")
+                        .hasAuthority(AuthoritiesConstants.ROLE_SUPERVISOR.name())
                 .anyRequest()
                 .authenticated()
         .and()

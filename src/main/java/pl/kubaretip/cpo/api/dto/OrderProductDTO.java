@@ -12,6 +12,7 @@ public class OrderProductDTO {
     private Long id;
     private Integer quantity;
     private ProductDTO product;
+    private UserDTO executor;
 
     public OrderProductDTO(Integer quantity, ProductDTO product) {
         this.quantity = quantity;

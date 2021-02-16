@@ -13,9 +13,10 @@ public class OrderDTO {
 
     private Long id;
     private ClientDTO client;
-    private UserDTO createdBy;
-    private UserDTO acceptedBy;
+    private UserDTO marketer;
+    private UserDTO supervisor;
     private AddressDTO deliveryAddress;
+    private String additionalInformation;
     private List<OrderProductDTO> orderProducts;
 
     public OrderDTO(ClientDTO client, List<OrderProductDTO> orderProducts, AddressDTO deliveryAddress) {

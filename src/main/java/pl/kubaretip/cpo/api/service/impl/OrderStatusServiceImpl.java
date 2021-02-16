@@ -3,6 +3,7 @@ package pl.kubaretip.cpo.api.service.impl;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import pl.kubaretip.cpo.api.constants.StatusConstants;
+import pl.kubaretip.cpo.api.domain.Order;
 import pl.kubaretip.cpo.api.domain.OrderStatus;
 import pl.kubaretip.cpo.api.exception.StatusResourceException;
 import pl.kubaretip.cpo.api.repository.StatusRepository;
@@ -29,6 +30,17 @@ public class OrderStatusServiceImpl implements OrderStatusService {
         var orderStatus = new OrderStatus();
         orderStatus.setStatus(createdStatus);
         return orderStatus;
+    }
+
+
+    public void saveOrderStatus(Order order, StatusConstants status){
+        var createdStatus = statusRepository.findByNameIgnoreCaseAndLocaleIgnoreCase(status.name(),
+                LocaleContextHolder.getLocale().toLanguageTag())
+                .orElseThrow(() -> new StatusResourceException(translator.translate("status.notFound.resource")));
+        var orderStatus = new OrderStatus();
+        orderStatus.setStatus(createdStatus);
+        orderStatus.setOrder(order);
+
     }
 
 

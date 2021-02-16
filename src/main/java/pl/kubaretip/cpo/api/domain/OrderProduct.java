@@ -28,5 +28,8 @@ public class OrderProduct {
     @Column(nullable = false)
     private Integer quantity;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "executor_user_id")
+    private User executor;
 
 }
