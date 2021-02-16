@@ -31,7 +31,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category getCategoryById(long categoryId) {
-        return findCategoryById(categoryId);
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new NotFoundException(translator.translate("common.notFound.title"),
+                        translator.translate("category.notFound.id.message", new Object[]{categoryId})));
     }
 
     @Override
@@ -50,7 +52,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void markCategoryAsDeleted(long categoryId) {
-        var category = findCategoryById(categoryId);
+        var category = getCategoryById(categoryId);
         category.setDeleted(true);
         categoryRepository.save(category);
     }
@@ -58,7 +60,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category modifyCategory(CategoryDTO categoryDTO) {
 
-        var category = findCategoryById(categoryDTO.getId());
+        var category = getCategoryById(categoryDTO.getId());
 
         categoryRepository.findByName(categoryDTO.getName())
                 .ifPresent(exists -> {
@@ -76,16 +78,6 @@ public class CategoryServiceImpl implements CategoryService {
     private AlreadyExistsException categoryWithNameAlreadyExists(String categoryName) {
         return new AlreadyExistsException(translator.translate("category.alreadyExists.title"),
                 translator.translate("category.alreadyExists.name.message", new Object[]{categoryName}));
-    }
-
-    private NotFoundException categoryWithIdNotFound(long categoryId) {
-        return new NotFoundException(translator.translate("common.notFound.title"),
-                translator.translate("category.notFound.id.message", new Object[]{categoryId}));
-    }
-
-    Category findCategoryById(long categoryId) {
-        return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> categoryWithIdNotFound(categoryId));
     }
 
 }
