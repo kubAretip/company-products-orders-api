@@ -13,7 +13,6 @@ import pl.kubaretip.cpo.api.repository.UserRepository;
 import pl.kubaretip.cpo.api.service.AuthorityService;
 import pl.kubaretip.cpo.api.service.UserActivationService;
 import pl.kubaretip.cpo.api.service.UserService;
-import pl.kubaretip.cpo.api.util.ExceptionUtils;
 import pl.kubaretip.cpo.api.util.SecurityUtils;
 import pl.kubaretip.cpo.api.util.Translator;
 
@@ -26,20 +25,17 @@ class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final Translator translator;
-    private final ExceptionUtils exceptionUtils;
     private final AuthorityService authorityService;
     private final UserActivationService userActivationService;
 
     public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder,
                            Translator translator,
-                           ExceptionUtils exceptionUtils,
                            AuthorityService authorityService,
                            UserActivationService userActivationService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.translator = translator;
-        this.exceptionUtils = exceptionUtils;
         this.authorityService = authorityService;
         this.userActivationService = userActivationService;
     }
@@ -100,7 +96,7 @@ class UserServiceImpl implements UserService {
     public User activateUser(String username, String password, String activationKey) {
 
         var user = userRepository.findByUsernameIgnoreCase(username)
-                .orElseThrow(() -> exceptionUtils.userNotFound(username));
+                .orElseThrow(() -> userNotFound(username));
 
         if (user.getActivated()) {
             throw new InvalidDataException(translator.translate("user.alreadyActivated.title"),
@@ -122,7 +118,7 @@ class UserServiceImpl implements UserService {
     @Override
     public void assignUserToNewAuthority(Long userId, String role) {
         var user = userRepository.findById(userId)
-                .orElseThrow(() -> exceptionUtils.userNotFound(userId));
+                .orElseThrow(() -> userNotFound(userId));
         user.getAuthorities().add(authorityService.getAuthority(role));
         userRepository.save(user);
     }
@@ -130,7 +126,7 @@ class UserServiceImpl implements UserService {
     @Override
     public void removeUserAuthority(Long userId, String role) {
         var user = userRepository.findById(userId)
-                .orElseThrow(() -> exceptionUtils.userNotFound(userId));
+                .orElseThrow(() -> userNotFound(userId));
         var authority = authorityService.getAuthority(role);
 
         if (authority.getName().equals(AuthoritiesConstants.ROLE_USER.name()))
@@ -144,7 +140,18 @@ class UserServiceImpl implements UserService {
     @Override
     public User findByUsername(String username) {
         return userRepository.findByUsernameIgnoreCase(username)
-                .orElseThrow(() -> exceptionUtils.userNotFound(username));
+                .orElseThrow(() -> userNotFound(username));
     }
+
+    private NotFoundException userNotFound(String username) {
+        return new NotFoundException(translator.translate("user.notFound.title"),
+                translator.translate("user.notFound.username.message", new Object[]{username}));
+    }
+
+    private NotFoundException userNotFound(long userId) {
+        return new NotFoundException(translator.translate("user.notFound.title"),
+                translator.translate("user.notFound.id.message", new Object[]{userId}));
+    }
+
 
 }
