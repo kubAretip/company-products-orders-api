@@ -1,7 +1,7 @@
 {
   "properties": [
     {
-      "name": "validity-time-in-seconds",
+      "name": "jwt.validity-time-in-seconds",
       "type": "java.lang.String",
       "description": "The token validity time in seconds. Default value is 12h."
     },
