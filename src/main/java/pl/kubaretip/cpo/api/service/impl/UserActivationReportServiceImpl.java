@@ -10,6 +10,7 @@ import pl.kubaretip.cpo.api.domain.UserActivationReport;
 import pl.kubaretip.cpo.api.exception.NotFoundException;
 import pl.kubaretip.cpo.api.repository.UserActivationReportRepository;
 import pl.kubaretip.cpo.api.service.UserActivationReportService;
+import pl.kubaretip.cpo.api.util.Translator;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -18,9 +19,12 @@ import java.io.ByteArrayOutputStream;
 public class UserActivationReportServiceImpl implements UserActivationReportService {
 
     private final UserActivationReportRepository userActivationReportRepository;
+    private final Translator translator;
 
-    public UserActivationReportServiceImpl(UserActivationReportRepository userActivationReportRepository) {
+    public UserActivationReportServiceImpl(UserActivationReportRepository userActivationReportRepository,
+                                           Translator translator) {
         this.userActivationReportRepository = userActivationReportRepository;
+        this.translator = translator;
     }
 
     @Override
@@ -37,7 +41,8 @@ public class UserActivationReportServiceImpl implements UserActivationReportServ
     @Override
     public UserActivationReport getUserActivationReport(long userId) {
         return userActivationReportRepository.findByUserId(userId)
-                .orElseThrow(() -> new NotFoundException("Not found", "Report not found"));
+                .orElseThrow(() -> new NotFoundException(translator.translate("common.notFound.title"),
+                        translator.translate("userActivationReport.notFound", new Object[]{userId})));
     }
 
     public byte[] generateUserActivationReport(User user, String activationKey) throws DocumentException {
@@ -56,15 +61,19 @@ public class UserActivationReportServiceImpl implements UserActivationReportServ
         var normalFont = FontFactory.getFont(FontFactory.TIMES_ROMAN, 14, BaseColor.BLACK);
         var titleFont = new Font(Font.FontFamily.TIMES_ROMAN, 16, Font.BOLD);
         paragraph.add(Chunk.NEWLINE);
-        paragraph.add(new Paragraph("User activation report", titleFont));
+        paragraph.add(new Paragraph(translator.translate("pdf.userActivation.title"), titleFont));
         paragraph.add(Chunk.NEWLINE);
-        paragraph.add(new Paragraph(new Chunk("First and last name: " + user.getFirstName() + " " + user.getLastName(), normalFont)));
+        paragraph.add(new Paragraph(new Chunk(translator.translate("pdf.userActivation.firstAndLastName")
+                + " " + user.getFirstName() + " " + user.getLastName(), normalFont)));
         paragraph.add(Chunk.NEWLINE);
-        paragraph.add(new Paragraph(new Chunk("Username: " + user.getUsername(), normalFont)));
+        paragraph.add(new Paragraph(new Chunk(translator.translate("pdf.userActivation.username")
+                + " " + user.getUsername(), normalFont)));
         paragraph.add(Chunk.NEWLINE);
-        paragraph.add(new Paragraph(new Chunk("Email: " + user.getEmail(), normalFont)));
+        paragraph.add(new Paragraph(new Chunk(translator.translate("pdf.userActivation.email")
+                + " " + user.getEmail(), normalFont)));
         paragraph.add(Chunk.NEWLINE);
-        paragraph.add(new Paragraph(new Chunk("Activation key: " + activationKey, normalFont)));
+        paragraph.add(new Paragraph(new Chunk(translator.translate("pdf.userActivation.activationKey")
+                + " " + activationKey, normalFont)));
         document.add(paragraph);
     }
 
