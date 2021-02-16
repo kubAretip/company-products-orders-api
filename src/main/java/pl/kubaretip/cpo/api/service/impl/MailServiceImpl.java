@@ -65,7 +65,7 @@ public class MailServiceImpl implements MailService {
             var content = templateEngine.process("mail/userActivation", context);
             sendEmail(userEmail, subject, content, false, true);
         } else {
-            throw new IllegalArgumentException("Invalid email");
+            log.error("User activation email was not send because user email is invalid.");
         }
     }
 

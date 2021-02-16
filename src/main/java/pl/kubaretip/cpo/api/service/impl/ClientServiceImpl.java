@@ -32,17 +32,17 @@ public class ClientServiceImpl implements ClientService {
 
         if (clientRepository.existsByCompanyNameIgnoreCase(clientDTO.getCompanyName())) {
             throw new AlreadyExistsException(translator.translate("common.alreadyExists.title"),
-                    "Client with company name already exists");
+                    translator.translate("client.alreadyExists.companyName", new Object[]{clientDTO.getCompanyName()}));
         }
 
         if (clientRepository.existsByEmailIgnoreCase(clientDTO.getEmail())) {
             throw new AlreadyExistsException(translator.translate("common.alreadyExists.title"),
-                    "Client with email already exists");
+                    translator.translate("client.alreadyExists.email", new Object[]{clientDTO.getEmail()}));
         }
 
         if (clientRepository.existsByPhoneNumberIgnoreCase(clientDTO.getPhoneNumber())) {
             throw new AlreadyExistsException(translator.translate("common.alreadyExists.title"),
-                    "Client with phone number already exists");
+                    translator.translate("client.alreadyExists.phoneNumber", new Object[]{clientDTO.getPhoneNumber()}));
         }
 
         var client = new Client();
@@ -67,7 +67,8 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Client findClientById(long id) {
         return clientRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Not found", "Client not found"));
+                .orElseThrow(() -> new NotFoundException(translator.translate("common.notFound.title"),
+                        translator.translate("client.notfound", new Object[]{id})));
     }
 
 
