@@ -5,10 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import pl.kubaretip.cpo.api.exception.AlreadyExistsException;
-import pl.kubaretip.cpo.api.exception.AuthorityNotExistsException;
-import pl.kubaretip.cpo.api.exception.InvalidDataException;
-import pl.kubaretip.cpo.api.exception.NotFoundException;
+import pl.kubaretip.cpo.api.exception.*;
 import pl.kubaretip.cpo.api.exception.model.Error;
 
 @RestControllerAdvice
@@ -24,9 +21,9 @@ public class BusinessLogicExceptionHandler {
                 .build();
     }
 
-    @ExceptionHandler(AuthorityNotExistsException.class)
+    @ExceptionHandler({AuthorityNotExistsException.class, UserResourceException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Error handleAuthorityNotExists(AuthorityNotExistsException ex, WebRequest request) {
+    public Error handleAuthorityNotExists(BusinessLogicException ex, WebRequest request) {
         return Error.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .detail(ex.getMessage())

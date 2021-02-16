@@ -50,12 +50,13 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toList());
 
         if (!productService.existsProductsWithIds(productsIds)) {
-            throw new NotFoundException("", "Order contains not existed product");
+            throw new NotFoundException(translator.translate("common.notFound.title"),
+                    translator.translate("order.incorrect.productsList"));
         }
 
         var createdBy = SecurityUtils.getCurrentUserLogin()
                 .map(userService::findByUsername)
-                .orElseThrow(() -> new UserResourceException("Current user not found"));
+                .orElseThrow(() -> new UserResourceException(translator.translate("user.notFound.userResource")));
 
         var client = clientService.findClientById(orderDTO.getClient().getId());
 
@@ -78,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
                 .filter(address -> address.getId().equals(orderDTO.getDeliveryAddress().getId()))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException(translator.translate("common.notFound.title"),
-                        "Client address with id " + orderDTO.getDeliveryAddress().getId() + " not exists"));
+                        translator.translate("client.notFound.address")));
 
         newOrder.setDeliveryAddress(deliveryAddress);
         newOrder.setCreatedBy(createdBy);
