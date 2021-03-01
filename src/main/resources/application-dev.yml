@@ -1,3 +1,6 @@
+server:
+  port: 8080
+  address: 127.0.0.1
 spring:
   datasource:
     url: jdbc:mysql://localhost:3311/cpo?createDatabaseIfNotExist=true&serverTimezone=UTC
@@ -9,9 +12,8 @@ spring:
   flyway:
     locations: classpath:/db/migration/common, classpath:/db/migration/dev
   mail:
-    host: smtp.ethereal.email
-    password: ${ETHEREAL_PASSWORD}
-    username: ${ETHEREAL_USERNAME}
+    host: localhost
+    port: 1000
 logging:
   level:
     pl:

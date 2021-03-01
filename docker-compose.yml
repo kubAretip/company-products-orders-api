@@ -1,0 +1,59 @@
+version: '3.8'
+
+volumes:
+  company_database:
+    name: cpo_vol
+    driver: local
+
+networks:
+  cpo_net:
+    driver: bridge
+
+services:
+  cpo_db:
+    container_name: cpo_mysql
+    image: library/mysql:8.0.22
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DB}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASS}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASS}
+    ports:
+      - 3311:3306
+    networks:
+      - cpo_net
+    volumes:
+      - company_database:/var/lib/mysql
+  cpo_backend:
+    container_name: cpo_api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      MYSQL_DB: ${MYSQL_DB}
+      DB_USERNAME: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASS}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_VALIDITY_TIME: ${JWT_VALIDITY_TIME}
+    restart: always
+    networks:
+      - cpo_net
+    ports:
+      - 8600:8080
+    depends_on:
+      - cpo_db
+      - cpo_mailhog
+  cpo_mailhog:
+    image: mailhog/mailhog
+    container_name: cpo_mailhog
+    networks:
+      - cpo_net
+    ports:
+      - 1000:1025 # smtp port
+      - 2000:8025 # web ui port

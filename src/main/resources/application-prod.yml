@@ -1,6 +1,8 @@
+server:
+  port: 8080
 spring:
   datasource:
-    url: ${DB_URL}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${MYSQL_DB}?createDatabaseIfNotExist=true&serverTimezone=UTC
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
   jpa:
@@ -8,6 +10,18 @@ spring:
       ddl-auto: none
   flyway:
     locations: classpath:/db/migration/common, classpath:/db/migration/prod
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    password: ${MAIL_PASSWORD}
+    username: ${MAIL_USERNAME}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
 jwt:
   base64-secret: ${JWT_SECRET}
   validity-time-in-seconds: ${JWT_VALIDITY_TIME}
