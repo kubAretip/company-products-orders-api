@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -11,9 +12,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import pl.kubaretip.cpo.api.constants.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.security.AuthenticationFailureHandler;
 import pl.kubaretip.cpo.api.security.AuthenticationSuccessHandler;
-import pl.kubaretip.cpo.api.constants.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.security.ExceptionHandlerFilter;
 import pl.kubaretip.cpo.api.security.jwt.JWTAuthenticationFilter;
 import pl.kubaretip.cpo.api.security.jwt.JWTAuthorizationFilter;
@@ -22,6 +23,7 @@ import pl.kubaretip.cpo.api.util.Translator;
 
 import static pl.kubaretip.cpo.api.constants.AppConstants.AUTHENTICATE_ENDPOINT;
 
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -29,6 +31,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final ObjectMapper objectMapper;
     private final JWTUtil jwtUtil;
     private final Translator translator;
+
+    private static final String[] SWAGGER_AUTH_WHITELIST = {
+            "/v3/api-docs/**",
+            "/swagger-resources/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html"
+    };
 
     public SecurityConfig(ObjectMapper objectMapper,
                           JWTUtil jwtUtil,
@@ -82,6 +91,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/orders/{id}/accept",
                         "/orders/{id}/reject")
                         .hasAuthority(AuthoritiesConstants.ROLE_SUPERVISOR.name())
+                .mvcMatchers(SWAGGER_AUTH_WHITELIST).permitAll()
                 .anyRequest()
                 .authenticated()
         .and()

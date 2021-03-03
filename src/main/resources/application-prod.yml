@@ -25,3 +25,6 @@ spring:
 jwt:
   base64-secret: ${JWT_SECRET}
   validity-time-in-seconds: ${JWT_VALIDITY_TIME}
+springfox:
+  documentation:
+    enabled: false
