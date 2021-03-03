@@ -9,8 +9,8 @@ import pl.kubaretip.cpo.api.dto.mapper.UserMapper;
 import pl.kubaretip.cpo.api.service.UserService;
 import pl.kubaretip.cpo.api.util.ExceptionUtils;
 import pl.kubaretip.cpo.api.web.rest.request.ActivateUserRequest;
-import pl.kubaretip.cpo.api.web.rest.request.UserAuthorityRequest;
 import pl.kubaretip.cpo.api.web.rest.request.NewUserRequest;
+import pl.kubaretip.cpo.api.web.rest.request.UserAuthorityRequest;
 
 import javax.validation.Valid;
 
@@ -66,6 +66,11 @@ public class UserController {
         }
         userService.removeUserAuthority(request.getUserId(), request.getAuthorityName());
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDTO> getUserById(@PathVariable("id") Long userId) {
+        return ResponseEntity.ok(userMapper.mapToDTO(userService.getUserById(userId)));
     }
 
 }

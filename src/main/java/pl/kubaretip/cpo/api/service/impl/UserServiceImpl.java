@@ -117,16 +117,14 @@ class UserServiceImpl implements UserService {
 
     @Override
     public void assignUserToNewAuthority(Long userId, String role) {
-        var user = userRepository.findById(userId)
-                .orElseThrow(() -> userNotFound(userId));
+        var user = getUserById(userId);
         user.getAuthorities().add(authorityService.getAuthority(role));
         userRepository.save(user);
     }
 
     @Override
     public void removeUserAuthority(Long userId, String role) {
-        var user = userRepository.findById(userId)
-                .orElseThrow(() -> userNotFound(userId));
+        var user = getUserById(userId);
         var authority = authorityService.getAuthority(role);
 
         if (authority.getName().equals(AuthoritiesConstants.ROLE_USER.name()))
@@ -163,5 +161,10 @@ class UserServiceImpl implements UserService {
                 translator.translate("user.notFound.id.message", new Object[]{userId}));
     }
 
+    @Override
+    public User getUserById(long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> userNotFound(userId));
+    }
 
 }

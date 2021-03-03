@@ -16,4 +16,6 @@ public interface UserService {
     User findByUsername(String username);
 
     User findUserByIdAndAuthority(long userId, AuthoritiesConstants authority);
+
+    User getUserById(long userId);
 }
