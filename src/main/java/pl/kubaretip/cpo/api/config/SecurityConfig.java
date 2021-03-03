@@ -12,7 +12,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import pl.kubaretip.cpo.api.constants.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.security.AuthenticationFailureHandler;
 import pl.kubaretip.cpo.api.security.AuthenticationSuccessHandler;
 import pl.kubaretip.cpo.api.security.CustomAccessDeniedHandler;
@@ -65,33 +64,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .mvcMatchers(HttpMethod.POST, AUTHENTICATE_ENDPOINT).permitAll()
                 .mvcMatchers(HttpMethod.PATCH, "/users/activate").permitAll()
-                .mvcMatchers(HttpMethod.POST,
-                        "/users",
-                        "/categories/**",
-                        "/units/**",
-                        "/products/**")
-                        .hasAuthority(AuthoritiesConstants.ROLE_MODERATOR.name())
-                .mvcMatchers(HttpMethod.PATCH,
-                        "/users/role",
-                        "/categories/**",
-                        "/units/**",
-                        "/products/**")
-                        .hasAuthority(AuthoritiesConstants.ROLE_MODERATOR.name())
-                .mvcMatchers(HttpMethod.GET,
-                        "/user-activation-reports/**")
-                        .hasAuthority(AuthoritiesConstants.ROLE_MODERATOR.name())
-                .mvcMatchers(HttpMethod.GET,
-                        "/categories",
-                        "/products")
-                        .hasAuthority(AuthoritiesConstants.ROLE_USER.name())
-                .mvcMatchers(HttpMethod.POST,
-                        "/clients",
-                        "/orders")
-                        .hasAuthority(AuthoritiesConstants.ROLE_MARKETER.name())
-                .mvcMatchers(HttpMethod.PATCH,
-                        "/orders/{id}/accept",
-                        "/orders/{id}/reject")
-                        .hasAuthority(AuthoritiesConstants.ROLE_SUPERVISOR.name())
                 .mvcMatchers(SWAGGER_AUTH_WHITELIST).permitAll()
                 .anyRequest()
                 .authenticated()

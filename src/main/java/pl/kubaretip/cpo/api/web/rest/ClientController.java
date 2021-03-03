@@ -1,11 +1,13 @@
 package pl.kubaretip.cpo.api.web.rest;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
+import pl.kubaretip.cpo.api.constants.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.dto.ClientDTO;
 import pl.kubaretip.cpo.api.dto.mapper.ClientMapper;
 import pl.kubaretip.cpo.api.service.ClientService;
@@ -26,6 +28,7 @@ public class ClientController {
         this.clientMapper = clientMapper;
     }
 
+    @Secured(AuthoritiesConstants.Code.MARKETER)
     @PostMapping
     public ResponseEntity<ClientDTO> createClient(@Valid @RequestBody NewClientRequest request,
                                                   UriComponentsBuilder uriComponentsBuilder) {

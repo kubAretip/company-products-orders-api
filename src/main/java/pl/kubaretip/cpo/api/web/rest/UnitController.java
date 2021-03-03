@@ -1,8 +1,10 @@
 package pl.kubaretip.cpo.api.web.rest;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+import pl.kubaretip.cpo.api.constants.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.dto.UnitDTO;
 import pl.kubaretip.cpo.api.dto.mapper.UnitMapper;
 import pl.kubaretip.cpo.api.service.UnitService;
@@ -28,6 +30,7 @@ public class UnitController {
         this.unitMapper = unitMapper;
     }
 
+    @Secured(AuthoritiesConstants.Code.MODERATOR)
     @PostMapping
     public ResponseEntity<UnitDTO> createUnit(@Valid @RequestBody NewUnitRequest request,
                                               UriComponentsBuilder uriComponentsBuilder) {
@@ -37,12 +40,14 @@ public class UnitController {
         return ResponseEntity.created(locationURI).body(resultUnitDTO);
     }
 
+    @Secured(AuthoritiesConstants.Code.MODERATOR)
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> markUnitAsDeleted(@PathVariable("id") long unitId) {
         unitService.markUnitAsDeleted(unitId);
         return ResponseEntity.accepted().build();
     }
 
+    @Secured(AuthoritiesConstants.Code.MODERATOR)
     @PatchMapping(path = "/{id}")
     public ResponseEntity<UnitDTO> editUnit(@PathVariable("id") long unitId, @Valid @RequestBody EditUnitRequest request) {
         if (request.getId() != unitId) {

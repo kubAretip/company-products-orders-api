@@ -1,8 +1,10 @@
 package pl.kubaretip.cpo.api.web.rest;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+import pl.kubaretip.cpo.api.constants.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.dto.OrderDTO;
 import pl.kubaretip.cpo.api.dto.mapper.OrderMapper;
 import pl.kubaretip.cpo.api.service.OrderService;
@@ -30,6 +32,7 @@ public class OrderController {
         this.exceptionUtils = exceptionUtils;
     }
 
+    @Secured(AuthoritiesConstants.Code.MARKETER)
     @PostMapping
     public ResponseEntity<OrderDTO> createNewOrder(@Valid @RequestBody NewOrderRequest request,
                                                    UriComponentsBuilder uriComponentsBuilder) {
@@ -39,6 +42,7 @@ public class OrderController {
         return ResponseEntity.created(location).body(orderMapper.mapToOrderDTOWithoutClientAddresses(order));
     }
 
+    @Secured(AuthoritiesConstants.Code.SUPERVISOR)
     @PatchMapping("/{id}/accept")
     public ResponseEntity<Void> acceptOrder(@PathVariable("id") long orderId,
                                             @Valid @RequestBody AcceptOrderRequest request) {
@@ -51,6 +55,7 @@ public class OrderController {
         return ResponseEntity.noContent().build();
     }
 
+    @Secured(AuthoritiesConstants.Code.SUPERVISOR)
     @PatchMapping("/{id}/reject")
     public ResponseEntity<Void> rejectOrder(@PathVariable("id") long orderId,
                                             @Valid @RequestBody RejectOrderRequest request) {
@@ -61,6 +66,7 @@ public class OrderController {
         return ResponseEntity.noContent().build();
     }
 
+    @Secured(AuthoritiesConstants.Code.SUPERVISOR)
     @GetMapping("/pending-acceptance")
     public ResponseEntity<List<OrderDTO>> ordersPendingForAccept() {
         return ResponseEntity.ok()

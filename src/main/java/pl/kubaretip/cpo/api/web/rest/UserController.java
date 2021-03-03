@@ -2,8 +2,10 @@ package pl.kubaretip.cpo.api.web.rest;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+import pl.kubaretip.cpo.api.constants.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.dto.UserDTO;
 import pl.kubaretip.cpo.api.dto.mapper.UserMapper;
 import pl.kubaretip.cpo.api.service.UserService;
@@ -31,6 +33,7 @@ public class UserController {
         this.exceptionUtils = exceptionUtils;
     }
 
+    @Secured(AuthoritiesConstants.Code.MODERATOR)
     @PostMapping
     public ResponseEntity<UserDTO> registerNewUser(@Valid @RequestBody NewUserRequest request,
                                                    UriComponentsBuilder uriComponentsBuilder) {
@@ -48,6 +51,7 @@ public class UserController {
         return ResponseEntity.ok(userMapper.mapToDTO(user));
     }
 
+    @Secured(AuthoritiesConstants.Code.MODERATOR)
     @PatchMapping(path = "/{id}/authority")
     public ResponseEntity<Void> assignUserToAuthority(@PathVariable("id") Long userId,
                                                       @Valid @RequestBody UserAuthorityRequest request) {
@@ -58,6 +62,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @Secured(AuthoritiesConstants.Code.MODERATOR)
     @DeleteMapping(path = "/{id}/authority")
     public ResponseEntity<Void> removeUserAuthority(@PathVariable("id") Long userId,
                                                     @Valid @RequestBody UserAuthorityRequest request) {
@@ -68,6 +73,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @Secured(AuthoritiesConstants.Code.USER)
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable("id") Long userId) {
         return ResponseEntity.ok(userMapper.mapToDTO(userService.getUserById(userId)));

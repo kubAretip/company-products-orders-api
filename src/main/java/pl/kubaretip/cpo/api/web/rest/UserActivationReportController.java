@@ -4,10 +4,12 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import pl.kubaretip.cpo.api.constants.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.service.UserActivationReportService;
 
 @RestController
@@ -20,6 +22,7 @@ public class UserActivationReportController {
         this.userActivationReportService = userActivationReportService;
     }
 
+    @Secured(AuthoritiesConstants.Code.MODERATOR)
     @GetMapping(params = {"user_id"})
     public ResponseEntity<Resource> getUserActivationReport(@RequestParam("user_id") long userId) {
         var userActivationReport = userActivationReportService.getUserActivationReport(userId);

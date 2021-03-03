@@ -1,8 +1,10 @@
 package pl.kubaretip.cpo.api.web.rest;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+import pl.kubaretip.cpo.api.constants.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.dto.CategoryDTO;
 import pl.kubaretip.cpo.api.dto.mapper.CategoryMapper;
 import pl.kubaretip.cpo.api.service.CategoryService;
@@ -29,16 +31,19 @@ public class CategoryController {
         this.categoryMapper = categoryMapper;
     }
 
+    @Secured(AuthoritiesConstants.Code.USER)
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> getAll() {
         return ResponseEntity.ok(categoryMapper.mapToDTOList(categoryService.getAllCategories()));
     }
 
+    @Secured(AuthoritiesConstants.Code.USER)
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDTO> getById(@PathVariable("id") long categoryId) {
         return ResponseEntity.ok(categoryMapper.mapToDTO(categoryService.getCategoryById(categoryId)));
     }
 
+    @Secured(AuthoritiesConstants.Code.MODERATOR)
     @PostMapping
     public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody NewCategoryRequest request,
                                                       UriComponentsBuilder uriComponentsBuilder) {
@@ -48,14 +53,14 @@ public class CategoryController {
         return ResponseEntity.created(locationURI).body(categoryMapper.mapToDTO(category));
     }
 
-
+    @Secured(AuthoritiesConstants.Code.MODERATOR)
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> markCategoryAsDeleted(@PathVariable("id") long categoryId) {
         categoryService.markCategoryAsDeleted(categoryId);
         return ResponseEntity.accepted().build();
     }
 
-
+    @Secured(AuthoritiesConstants.Code.MODERATOR)
     @PatchMapping(path = "/{id}")
     public ResponseEntity<CategoryDTO> editCategory(@PathVariable("id") long categoryId,
                                                     @Valid @RequestBody EditCategoryRequest request) {

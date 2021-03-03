@@ -1,8 +1,10 @@
 package pl.kubaretip.cpo.api.web.rest;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+import pl.kubaretip.cpo.api.constants.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.dto.ProductDTO;
 import pl.kubaretip.cpo.api.dto.mapper.ProductMapper;
 import pl.kubaretip.cpo.api.service.ProductService;
@@ -29,6 +31,7 @@ public class ProductController {
         this.productMapper = productMapper;
     }
 
+    @Secured(AuthoritiesConstants.Code.MODERATOR)
     @PostMapping
     public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody NewProductRequest request,
                                                     UriComponentsBuilder uriComponentsBuilder) {
@@ -38,17 +41,20 @@ public class ProductController {
         return ResponseEntity.created(locationUri).body(productMapper.mapToDTO(product));
     }
 
+    @Secured(AuthoritiesConstants.Code.MODERATOR)
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> markProductAsDeleted(@PathVariable("id") long productId) {
         productService.markProductAsDeleted(productId);
         return ResponseEntity.accepted().build();
     }
 
+    @Secured(AuthoritiesConstants.Code.USER)
     @GetMapping
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
         return ResponseEntity.ok(productMapper.mapToListDTO(productService.getAllProducts()));
     }
 
+    @Secured(AuthoritiesConstants.Code.MODERATOR)
     @PatchMapping(path = "/{id}")
     public ResponseEntity<ProductDTO> modifyProducts(@PathVariable("id") long productId,
                                                      @Valid @RequestBody EditProductRequest request) {
