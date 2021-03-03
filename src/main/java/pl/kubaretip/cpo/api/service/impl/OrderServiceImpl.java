@@ -135,6 +135,7 @@ public class OrderServiceImpl implements OrderService {
         var rejectedOrderStatus = orderStatusService.getOrderStatus(StatusConstants.REJECTED);
         rejectedOrderStatus.setOrder(order);
         order.getOrderStatus().add(rejectedOrderStatus);
+        orderRepository.flush();
         orderRepository.save(order);
     }
 
@@ -168,7 +169,7 @@ public class OrderServiceImpl implements OrderService {
 
     boolean isOrderAlreadyRejected(Order order) {
         return getOrderStatuses(order).stream()
-                .anyMatch(status -> status.getName().equals(StatusConstants.ACCEPTED.name()));
+                .anyMatch(status -> status.getName().equals(StatusConstants.REJECTED.name()));
     }
 
     List<Status> getOrderStatuses(Order order) {
