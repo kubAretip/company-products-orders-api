@@ -12,6 +12,7 @@ import pl.kubaretip.cpo.api.web.rest.request.NewOrderRequest;
 import pl.kubaretip.cpo.api.web.rest.request.RejectOrderRequest;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/orders")
@@ -35,7 +36,7 @@ public class OrderController {
         var order = orderService.createNewOrder(request.toDTO());
         var location = uriComponentsBuilder.path("/orders/{id}")
                 .buildAndExpand(order.getId()).toUri();
-        return ResponseEntity.created(location).body(orderMapper.mapToDTO(order));
+        return ResponseEntity.created(location).body(orderMapper.mapToOrderDTOWithoutClientAddresses(order));
     }
 
     @PatchMapping("/{id}/accept")
@@ -58,6 +59,12 @@ public class OrderController {
         }
         orderService.rejectOrder(request.toDTO());
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/pending-acceptance")
+    public ResponseEntity<List<OrderDTO>> ordersPendingForAccept() {
+        return ResponseEntity.ok()
+                .body(orderMapper.mapToOrderDTOList(orderService.getOrdersWithPendingSupervisorAcceptance()));
     }
 
 

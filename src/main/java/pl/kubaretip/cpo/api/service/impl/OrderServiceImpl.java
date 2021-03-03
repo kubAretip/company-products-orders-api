@@ -183,5 +183,10 @@ public class OrderServiceImpl implements OrderService {
         return new UserResourceException(translator.translate("user.notFound.userResource"));
     }
 
+    @Override
+    public List<Order> getOrdersWithPendingSupervisorAcceptance(){
+        return orderRepository.findBySupervisorIsNull();
+    }
+
 
 }
