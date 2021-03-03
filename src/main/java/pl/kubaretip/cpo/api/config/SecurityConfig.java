@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import pl.kubaretip.cpo.api.constants.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.security.AuthenticationFailureHandler;
 import pl.kubaretip.cpo.api.security.AuthenticationSuccessHandler;
+import pl.kubaretip.cpo.api.security.CustomAccessDeniedHandler;
 import pl.kubaretip.cpo.api.security.ExceptionHandlerFilter;
 import pl.kubaretip.cpo.api.security.jwt.JWTAuthenticationFilter;
 import pl.kubaretip.cpo.api.security.jwt.JWTAuthorizationFilter;
@@ -99,6 +100,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .exceptionHandling()
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                .accessDeniedHandler(customAccessDeniedHandler())
         .and()
                 .addFilterBefore(exceptionHandlerFilter, JWTAuthenticationFilter.class)
                 .addFilter(authorizationFilter())
@@ -120,6 +122,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         filter.setAuthenticationManager(super.authenticationManager());
         filter.setFilterProcessesUrl(AUTHENTICATE_ENDPOINT);
         return filter;
+    }
+
+    @Bean
+    public CustomAccessDeniedHandler customAccessDeniedHandler() {
+        return new CustomAccessDeniedHandler(objectMapper, translator);
     }
 
     @Bean
