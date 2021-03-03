@@ -71,5 +71,16 @@ public class ClientServiceImpl implements ClientService {
                         translator.translate("client.notfound", new Object[]{id})));
     }
 
+    @Override
+    public Client modifyClient(long clientId, ClientDTO clientDTO) {
+        var client = findClientById(clientId);
+        client.setFirstName(clientDTO.getFirstName());
+        client.setLastName(clientDTO.getLastName());
+        client.setCompanyName(clientDTO.getCompanyName());
+        client.setEmail(clientDTO.getEmail());
+        client.setPhoneNumber(clientDTO.getPhoneNumber());
+        return clientRepository.save(client);
+    }
+
 
 }

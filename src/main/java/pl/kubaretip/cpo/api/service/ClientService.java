@@ -7,4 +7,6 @@ public interface ClientService {
     Client createClient(ClientDTO clientDTO);
 
     Client findClientById(long id);
+
+    Client modifyClient(long clientId, ClientDTO clientDTO);
 }

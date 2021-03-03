@@ -2,15 +2,13 @@ package pl.kubaretip.cpo.api.web.rest;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.kubaretip.cpo.api.constants.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.dto.ClientDTO;
 import pl.kubaretip.cpo.api.dto.mapper.ClientMapper;
 import pl.kubaretip.cpo.api.service.ClientService;
+import pl.kubaretip.cpo.api.web.rest.request.ClientRequest;
 import pl.kubaretip.cpo.api.web.rest.request.NewClientRequest;
 
 import javax.validation.Valid;
@@ -36,6 +34,14 @@ public class ClientController {
         var locationURI = uriComponentsBuilder.path("/clients/{id}")
                 .buildAndExpand(client.getId()).toUri();
         return ResponseEntity.created(locationURI).body(clientMapper.mapToDTO(client));
+    }
+
+    @Secured(AuthoritiesConstants.Code.MARKETER)
+    @PutMapping("/{id}")
+    public ResponseEntity<ClientDTO> modifyClientInformation(@PathVariable("id") long clientId,
+                                                             @Valid @RequestBody ClientRequest request) {
+        var client = clientService.modifyClient(clientId, request.toDTO());
+        return ResponseEntity.ok().body(clientMapper.mapToDTO(client));
     }
 
 }
