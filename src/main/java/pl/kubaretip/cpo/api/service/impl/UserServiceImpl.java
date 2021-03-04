@@ -44,10 +44,7 @@ class UserServiceImpl implements UserService {
     public User createUser(UserDTO userDTO) {
 
         log.debug("Creating new user");
-        if (userRepository.existsByEmailIgnoreCase(userDTO.getEmail())) {
-            throw new AlreadyExistsException(translator.translate("user.alreadyInUse.email.title"),
-                    translator.translate("user.alreadyInUse.email.message", new Object[]{userDTO.getEmail()}));
-        }
+        throwExceptionWhenUserWithEmailAlreadyExists(userDTO.getEmail());
 
         var user = new User();
 
@@ -161,10 +158,39 @@ class UserServiceImpl implements UserService {
                 translator.translate("user.notFound.id.message", new Object[]{userId}));
     }
 
+    void throwExceptionWhenUserWithEmailAlreadyExists(String email) {
+        if (userRepository.existsByEmailIgnoreCase(email)) {
+            throw new AlreadyExistsException(translator.translate("user.alreadyInUse.email.title"),
+                    translator.translate("user.alreadyInUse.email.message", new Object[]{email}));
+        }
+    }
+
     @Override
     public User getUserById(long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> userNotFound(userId));
     }
+
+    @Override
+    public User editUserById(UserDTO userDTO) {
+        var user = getUserById(userDTO.getId());
+        user.setPhoneNumber(userDTO.getPhoneNumber());
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User updateUser(UserDTO userDTO) {
+        var user = getUserById(userDTO.getId());
+
+        if (!user.getEmail().equalsIgnoreCase(userDTO.getEmail()))
+            throwExceptionWhenUserWithEmailAlreadyExists(userDTO.getEmail());
+
+        user.setPhoneNumber(userDTO.getPhoneNumber());
+        user.setEmail(userDTO.getEmail());
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        return userRepository.save(user);
+    }
+
 
 }

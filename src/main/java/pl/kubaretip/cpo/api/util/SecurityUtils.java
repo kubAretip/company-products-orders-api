@@ -16,6 +16,10 @@ public final class SecurityUtils {
         return Optional.ofNullable(parseAuthentication(securityContext.getAuthentication()));
     }
 
+    public static SecurityUser principal(Object principal) {
+        return (SecurityUser) principal;
+    }
+
     private static String parseAuthentication(Authentication authentication) {
         if (authentication == null) {
             return null;

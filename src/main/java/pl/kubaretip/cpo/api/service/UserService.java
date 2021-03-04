@@ -18,4 +18,8 @@ public interface UserService {
     User findUserByIdAndAuthority(long userId, AuthoritiesConstants authority);
 
     User getUserById(long userId);
+
+    User editUserById(UserDTO userDTO);
+
+    User updateUser(UserDTO userDTO);
 }
