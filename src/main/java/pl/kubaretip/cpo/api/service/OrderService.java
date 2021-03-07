@@ -8,7 +8,7 @@ import java.util.List;
 public interface OrderService {
     Order createNewOrder(OrderDTO orderDTO);
 
-    void acceptOrder(OrderDTO orderDTO);
+    void acceptOrder(OrderDTO orderDTO,long supervisorId);
 
     void rejectOrder(OrderDTO orderDTO, long supervisorId);
 

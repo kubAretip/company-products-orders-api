@@ -1,16 +1,14 @@
 package pl.kubaretip.cpo.api.dto.mapper;
 
-import org.mapstruct.IterableMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 import pl.kubaretip.cpo.api.domain.Order;
 import pl.kubaretip.cpo.api.dto.OrderDTO;
+import pl.kubaretip.cpo.api.web.rest.request.AcceptOrderRequest;
 import pl.kubaretip.cpo.api.web.rest.request.RejectOrderRequest;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {OrderProductMapper.class})
 public interface OrderMapper {
 
     @Named("mapToOrderDTO")
@@ -22,11 +20,9 @@ public interface OrderMapper {
     @IterableMapping(qualifiedByName = "mapToOrderDTO")
     List<OrderDTO> mapToOrderDTOList(List<Order> orderList);
 
-    @Mapping(target = "supervisor", ignore = true)
-    @Mapping(target = "orderProducts", ignore = true)
-    @Mapping(target = "marketer", ignore = true)
-    @Mapping(target = "deliveryAddress", ignore = true)
-    @Mapping(target = "client", ignore = true)
     OrderDTO mapRejectOrderRequestToOrderDTO(RejectOrderRequest request);
+
+    @Mapping(target = "orderProducts", source = "orderExecutors", qualifiedByName = "acceptOrderProductsToOrderProductsDTO")
+    OrderDTO mapAcceptOrderRequestToOrderDTO(AcceptOrderRequest request);
 
 }

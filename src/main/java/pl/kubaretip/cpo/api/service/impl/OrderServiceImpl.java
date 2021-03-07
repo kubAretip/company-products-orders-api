@@ -93,11 +93,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void acceptOrder(OrderDTO orderDTO) {
+    public void acceptOrder(OrderDTO orderDTO,long supervisorId) {
         var order = getOrderById(orderDTO.getId());
+
         throwExceptionIfAlreadyAcceptedOrRejected(order);
 
-        order.setSupervisor(getCurrentUser());
+        order.setSupervisor(userService.findUserByIdAndAuthority(supervisorId, AuthoritiesConstants.ROLE_SUPERVISOR));
 
         order.getOrderProducts()
                 .forEach(orderProduct -> {

@@ -47,13 +47,15 @@ public class OrderController {
     @Secured(AuthoritiesConstants.Code.SUPERVISOR)
     @PatchMapping("/{id}/accept")
     public ResponseEntity<Void> acceptOrder(@PathVariable("id") long orderId,
-                                            @Valid @RequestBody AcceptOrderRequest request) {
+                                            @Valid @RequestBody AcceptOrderRequest request,
+                                            Authentication authentication) {
 
         if (orderId != request.getId()) {
             throw exceptionUtils.pathIdNotEqualsBodyId();
         }
 
-        orderService.acceptOrder(request.toDTO());
+        orderService.acceptOrder(orderMapper.mapAcceptOrderRequestToOrderDTO(request),
+                SecurityUtils.principal(authentication.getPrincipal()).getId());
         return ResponseEntity.noContent().build();
     }
 
