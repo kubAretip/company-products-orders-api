@@ -32,5 +32,12 @@ public interface OrderProductMapper {
     @IterableMapping(qualifiedByName = "mapNewOrderRequestProductToOrderProductDTO")
     List<OrderProductDTO> mapNewOrderRequestProductListToOrderProductDTOList(List<NewOrderRequest.ProductInOrder> productInOrders);
 
+    @IterableMapping(qualifiedByName = "mapToOrderProductDTOWithoutExecutor")
+    List<OrderProductDTO> mapOrderProductListToOrderProductDTOList(List<OrderProduct> entityList);
+
+    @Named("mapToOrderProductDTOWithoutExecutor")
+    @Mapping(target = "executor", ignore = true)
+    OrderProductDTO mapToOrderProductDTOWithoutExecutor(OrderProduct orderProduct);
+
 
 }
