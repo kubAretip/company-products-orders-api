@@ -4,7 +4,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import pl.kubaretip.cpo.api.constants.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.constants.StatusConstants;
-import pl.kubaretip.cpo.api.domain.*;
+import pl.kubaretip.cpo.api.domain.Order;
+import pl.kubaretip.cpo.api.domain.OrderProduct;
+import pl.kubaretip.cpo.api.domain.OrderStatus;
+import pl.kubaretip.cpo.api.domain.Status;
 import pl.kubaretip.cpo.api.dto.OrderDTO;
 import pl.kubaretip.cpo.api.exception.InvalidDataException;
 import pl.kubaretip.cpo.api.exception.NotFoundException;
@@ -12,7 +15,6 @@ import pl.kubaretip.cpo.api.exception.OrderStatusException;
 import pl.kubaretip.cpo.api.exception.UserResourceException;
 import pl.kubaretip.cpo.api.repository.OrderRepository;
 import pl.kubaretip.cpo.api.service.*;
-import pl.kubaretip.cpo.api.util.SecurityUtils;
 import pl.kubaretip.cpo.api.util.Translator;
 
 import java.util.Collections;
@@ -46,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order createNewOrder(OrderDTO orderDTO) {
+    public Order createNewOrder(OrderDTO orderDTO, long marketerId) {
 
         var newOrder = new Order();
 
@@ -84,7 +86,7 @@ public class OrderServiceImpl implements OrderService {
                         translator.translate("client.notFound.address")));
 
         newOrder.setDeliveryAddress(deliveryAddress);
-        newOrder.setMarketer(getCurrentUser());
+        newOrder.setMarketer(userService.findUserByIdAndAuthority(marketerId, AuthoritiesConstants.ROLE_MARKETER));
         newOrder.setClient(client);
         newOrder.setOrderProducts(orderProducts);
         newOrder.setOrderStatus(Collections.singleton(newOrderStatus));
@@ -93,7 +95,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void acceptOrder(OrderDTO orderDTO,long supervisorId) {
+    public void acceptOrder(OrderDTO orderDTO, long supervisorId) {
         var order = getOrderById(orderDTO.getId());
 
         throwExceptionIfAlreadyAcceptedOrRejected(order);
@@ -138,12 +140,6 @@ public class OrderServiceImpl implements OrderService {
         order.getOrderStatus().add(rejectedOrderStatus);
         orderRepository.flush();
         orderRepository.save(order);
-    }
-
-    User getCurrentUser() {
-        return SecurityUtils.getCurrentUserLogin()
-                .map(userService::findByUsername)
-                .orElseThrow(this::userResourceException);
     }
 
     void throwExceptionIfAlreadyAcceptedOrRejected(Order order) {

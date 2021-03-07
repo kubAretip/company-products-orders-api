@@ -37,8 +37,10 @@ public class OrderController {
     @Secured(AuthoritiesConstants.Code.MARKETER)
     @PostMapping
     public ResponseEntity<OrderDTO> createNewOrder(@Valid @RequestBody NewOrderRequest request,
-                                                   UriComponentsBuilder uriComponentsBuilder) {
-        var order = orderService.createNewOrder(request.toDTO());
+                                                   UriComponentsBuilder uriComponentsBuilder,
+                                                   Authentication authentication) {
+        var order = orderService.createNewOrder(orderMapper.mapNewOrderRequestToOrderDTO(request),
+                SecurityUtils.principal(authentication.getPrincipal()).getId());
         var location = uriComponentsBuilder.path("/orders/{id}")
                 .buildAndExpand(order.getId()).toUri();
         return ResponseEntity.created(location).body(orderMapper.mapToOrderDTOWithoutClientAddresses(order));

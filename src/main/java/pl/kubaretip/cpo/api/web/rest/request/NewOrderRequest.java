@@ -3,14 +3,12 @@ package pl.kubaretip.cpo.api.web.rest.request;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.kubaretip.cpo.api.dto.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -26,20 +24,10 @@ public class NewOrderRequest {
     @NotEmpty(message = "{validation.order.products.notEmpty}")
     private List<@Valid ProductInOrder> products;
 
-    public OrderDTO toDTO() {
-        var orderProductsDTO = this.products.stream()
-                .map(productInOrder -> new OrderProductDTO(productInOrder.getQuantity(),
-                        new ProductDTO(productInOrder.getProductId())))
-                .collect(Collectors.toList());
-        var clientDTO = new ClientDTO(this.clientId);
-        var deliveryAddressDTO = new AddressDTO(this.deliveryAddressId);
-        return new OrderDTO(clientDTO, orderProductsDTO, deliveryAddressDTO);
-    }
-
     @Getter
     @Setter
     @NoArgsConstructor
-    private static class ProductInOrder {
+    public static class ProductInOrder {
 
         @NotNull(message = "{validation.order.products.productId.notNull}")
         private Long productId;

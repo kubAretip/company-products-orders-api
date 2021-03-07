@@ -6,9 +6,9 @@ import pl.kubaretip.cpo.api.dto.OrderDTO;
 import java.util.List;
 
 public interface OrderService {
-    Order createNewOrder(OrderDTO orderDTO);
+    Order createNewOrder(OrderDTO orderDTO, long marketerId);
 
-    void acceptOrder(OrderDTO orderDTO,long supervisorId);
+    void acceptOrder(OrderDTO orderDTO, long supervisorId);
 
     void rejectOrder(OrderDTO orderDTO, long supervisorId);
 
