@@ -123,10 +123,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void rejectOrder(OrderDTO orderDTO) {
+    public void rejectOrder(OrderDTO orderDTO, long supervisorId) {
         var order = getOrderById(orderDTO.getId());
         throwExceptionIfAlreadyAcceptedOrRejected(order);
-        order.setSupervisor(getCurrentUser());
+        order.setSupervisor(userService.findUserByIdAndAuthority(supervisorId, AuthoritiesConstants.ROLE_SUPERVISOR));
 
         if (StringUtils.isNotEmpty(orderDTO.getAdditionalInformation())) {
             order.setAdditionalInformation(orderDTO.getAdditionalInformation());
@@ -184,7 +184,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getOrdersWithPendingSupervisorAcceptance(){
+    public List<Order> getOrdersWithPendingSupervisorAcceptance() {
         return orderRepository.findBySupervisorIsNull();
     }
 

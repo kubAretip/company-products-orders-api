@@ -2,6 +2,7 @@ package pl.kubaretip.cpo.api.web.rest;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.kubaretip.cpo.api.constants.AuthoritiesConstants;
@@ -9,6 +10,7 @@ import pl.kubaretip.cpo.api.dto.OrderDTO;
 import pl.kubaretip.cpo.api.dto.mapper.OrderMapper;
 import pl.kubaretip.cpo.api.service.OrderService;
 import pl.kubaretip.cpo.api.util.ExceptionUtils;
+import pl.kubaretip.cpo.api.util.SecurityUtils;
 import pl.kubaretip.cpo.api.web.rest.request.AcceptOrderRequest;
 import pl.kubaretip.cpo.api.web.rest.request.NewOrderRequest;
 import pl.kubaretip.cpo.api.web.rest.request.RejectOrderRequest;
@@ -58,11 +60,13 @@ public class OrderController {
     @Secured(AuthoritiesConstants.Code.SUPERVISOR)
     @PatchMapping("/{id}/reject")
     public ResponseEntity<Void> rejectOrder(@PathVariable("id") long orderId,
-                                            @Valid @RequestBody RejectOrderRequest request) {
+                                            @Valid @RequestBody RejectOrderRequest request,
+                                            Authentication authentication) {
         if (orderId != request.getId()) {
             throw exceptionUtils.pathIdNotEqualsBodyId();
         }
-        orderService.rejectOrder(request.toDTO());
+        var orderDTO = orderMapper.mapRejectOrderRequestToOrderDTO(request);
+        orderService.rejectOrder(orderDTO, SecurityUtils.principal(authentication.getPrincipal()).getId());
         return ResponseEntity.noContent().build();
     }
 
