@@ -80,7 +80,7 @@ public class OrderServiceImpl implements OrderService {
 
         var deliveryAddress = client.getAddresses()
                 .stream()
-                .filter(address -> address.getId().equals(orderDTO.getDeliveryAddress().getId()))
+                .filter(address -> address.getId().equals(orderDTO.getDeliveryAddress().getId()) && !address.isDeleted())
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException(translator.translate("common.notFound.title"),
                         translator.translate("client.notFound.address")));

@@ -7,4 +7,6 @@ public interface AddressService {
     Address findAddressById(long addressId);
 
     Address updateAddressById(AddressDTO addressDTO);
+
+    void markAddressAsDeleted(long addressId);
 }

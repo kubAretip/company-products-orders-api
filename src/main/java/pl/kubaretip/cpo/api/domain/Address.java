@@ -40,6 +40,9 @@ public class Address {
     @JoinColumn(name = "client_id")
     private Client client;
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

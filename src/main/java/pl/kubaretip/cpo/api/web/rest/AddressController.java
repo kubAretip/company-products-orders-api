@@ -46,4 +46,11 @@ public class AddressController {
         return ResponseEntity.ok(addressMapper.mapToDTO(address));
     }
 
+    @Secured({AuthoritiesConstants.Code.MARKETER})
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> markAddressAsDeleted(@PathVariable("id") long addressId) {
+        addressService.markAddressAsDeleted(addressId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

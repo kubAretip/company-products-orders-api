@@ -42,4 +42,12 @@ public class AddressServiceImpl implements AddressService {
         return addressRepository.save(address);
     }
 
+    @Override
+    public void markAddressAsDeleted(long addressId) {
+        var address = findAddressById(addressId);
+        address.setDeleted(true);
+        addressRepository.save(address);
+    }
+
+
 }
