@@ -6,6 +6,16 @@
 * MySql
 * FlyWay
 
+#### Features:
+* JSON Web Token authentication
+* Support for i18n (available languages: PL, EN)
+* Users registration and activation via mail or with generated pdf with activation details.
+* Management of users roles
+* Management of clients
+* Management of products
+* Management of clients orders and statuses
+* Allocation of contractors for the client orders
+
 #### Requirements:
 * Install Maven, see https://maven.apache.org/download.cgi
 * Install Docker, see https://docs.docker.com/get-docker
