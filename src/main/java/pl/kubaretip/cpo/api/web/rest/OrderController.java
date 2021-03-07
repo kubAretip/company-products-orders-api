@@ -89,4 +89,12 @@ public class OrderController {
     }
 
 
+    @Secured(AuthoritiesConstants.Code.USER)
+    @GetMapping(params = {"from", "to"})
+    public ResponseEntity<List<OrderDTO>> getOrders(@RequestParam("from") int from, @RequestParam("to") int to) {
+        var orders = orderService.getOrders(from, to);
+        return ResponseEntity.ok(orderMapper.mapToOrderDTOList(orders));
+    }
+
+
 }

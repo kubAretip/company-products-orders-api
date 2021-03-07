@@ -15,4 +15,6 @@ public interface OrderService {
     Order getOrderById(long orderId);
 
     List<Order> getOrdersWithPendingSupervisorAcceptance();
+
+    List<Order> getOrders(int from, int to);
 }

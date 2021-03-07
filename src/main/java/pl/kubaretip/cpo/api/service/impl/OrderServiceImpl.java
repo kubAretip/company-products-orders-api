@@ -1,6 +1,7 @@
 package pl.kubaretip.cpo.api.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import pl.kubaretip.cpo.api.constants.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.constants.StatusConstants;
@@ -12,7 +13,6 @@ import pl.kubaretip.cpo.api.dto.OrderDTO;
 import pl.kubaretip.cpo.api.exception.InvalidDataException;
 import pl.kubaretip.cpo.api.exception.NotFoundException;
 import pl.kubaretip.cpo.api.exception.OrderStatusException;
-import pl.kubaretip.cpo.api.exception.UserResourceException;
 import pl.kubaretip.cpo.api.repository.OrderRepository;
 import pl.kubaretip.cpo.api.service.*;
 import pl.kubaretip.cpo.api.util.Translator;
@@ -177,13 +177,14 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toList());
     }
 
-    private UserResourceException userResourceException() {
-        return new UserResourceException(translator.translate("user.notFound.userResource"));
-    }
-
     @Override
     public List<Order> getOrdersWithPendingSupervisorAcceptance() {
         return orderRepository.findBySupervisorIsNull();
+    }
+
+    @Override
+    public List<Order> getOrders(int from, int to) {
+        return orderRepository.findAllWithPageable(PageRequest.of(from, to));
     }
 
 
