@@ -12,5 +12,7 @@ public interface OrderService {
 
     void rejectOrder(OrderDTO orderDTO, long supervisorId);
 
+    Order getOrderById(long orderId);
+
     List<Order> getOrdersWithPendingSupervisorAcceptance();
 }

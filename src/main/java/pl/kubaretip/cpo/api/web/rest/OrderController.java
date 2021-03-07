@@ -81,5 +81,12 @@ public class OrderController {
                 .body(orderMapper.mapToOrderDTOList(orderService.getOrdersWithPendingSupervisorAcceptance()));
     }
 
+    @Secured(AuthoritiesConstants.Code.USER)
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable("id") long orderId) {
+        var orderById = orderService.getOrderById(orderId);
+        return ResponseEntity.ok(orderMapper.mapToOrderDTO(orderById));
+    }
+
 
 }

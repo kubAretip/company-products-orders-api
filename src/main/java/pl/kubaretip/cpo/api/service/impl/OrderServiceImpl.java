@@ -153,7 +153,8 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    Order getOrderById(long orderId) {
+    @Override
+    public Order getOrderById(long orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new NotFoundException(translator.translate("common.notFound.title"),
                         translator.translate("order.notFound", new Object[]{orderId})));
