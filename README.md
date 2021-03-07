@@ -12,7 +12,7 @@
 
 #### Steps to run
 1. Clone repo
-``git clone git@github.com:kubAretip/company-products-orders-api.git``
+``git clone https://github.com/kubAretip/company-products-orders-api.git``
 2. Package
 ``mvn clean install -P prod``
 3. Run
