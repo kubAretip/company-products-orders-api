@@ -35,7 +35,7 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody NewProductRequest request,
                                                     UriComponentsBuilder uriComponentsBuilder) {
-        var product = productService.createProduct(request.toDTO());
+        var product = productService.createProduct(productMapper.mapNewProductRequestToProductDTO(request));
         var locationUri = uriComponentsBuilder.path("/products/{id}")
                 .buildAndExpand(product.getId()).toUri();
         return ResponseEntity.created(locationUri).body(productMapper.mapToDTO(product));
@@ -61,7 +61,9 @@ public class ProductController {
         if (productId != request.getId()) {
             throw exceptionUtils.pathIdNotEqualsBodyId();
         }
-        return ResponseEntity.ok(productMapper.mapToDTO(productService.modifyProduct(request.toDTO())));
+        var productDTO = productMapper.mapEditProductRequestToProductDTO(request);
+        var product = productService.modifyProduct(productDTO);
+        return ResponseEntity.ok(productMapper.mapToDTO(product));
     }
 
 

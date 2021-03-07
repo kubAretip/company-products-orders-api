@@ -47,7 +47,7 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody NewCategoryRequest request,
                                                       UriComponentsBuilder uriComponentsBuilder) {
-        var category = categoryService.createCategory(request.toDTO());
+        var category = categoryService.createCategory(categoryMapper.mapNewCategoryRequestToCategoryDTO(request));
         var locationURI = uriComponentsBuilder.path("/categories/{id}")
                 .buildAndExpand(category.getId()).toUri();
         return ResponseEntity.created(locationURI).body(categoryMapper.mapToDTO(category));
@@ -67,7 +67,7 @@ public class CategoryController {
         if (request.getId() != categoryId) {
             throw exceptionUtils.pathIdNotEqualsBodyId();
         }
-        var resultCategory = categoryService.modifyCategory(request.toDTO());
+        var resultCategory = categoryService.modifyCategory(categoryMapper.mapEditCategoryRequestToCategoryDTO(request));
         return ResponseEntity.ok(categoryMapper.mapToDTO(resultCategory));
     }
 

@@ -34,7 +34,8 @@ public class UnitController {
     @PostMapping
     public ResponseEntity<UnitDTO> createUnit(@Valid @RequestBody NewUnitRequest request,
                                               UriComponentsBuilder uriComponentsBuilder) {
-        var resultUnitDTO = unitMapper.mapToDTO(unitService.createUnit(request.toDTO()));
+        var unitDTO = unitMapper.mapNewUnitRequestToUnitDTO(request);
+        var resultUnitDTO = unitMapper.mapToDTO(unitService.createUnit(unitDTO));
         var locationURI = uriComponentsBuilder.path("/units/{id}")
                 .buildAndExpand(resultUnitDTO.getId()).toUri();
         return ResponseEntity.created(locationURI).body(resultUnitDTO);
@@ -53,7 +54,8 @@ public class UnitController {
         if (request.getId() != unitId) {
             throw exceptionUtils.pathIdNotEqualsBodyId();
         }
-        return ResponseEntity.ok(unitMapper.mapToDTO(unitService.modifyUnit(request.toDTO())));
+        var unitDTO = unitMapper.mapEditUnitRequestToUnitDTO(request);
+        return ResponseEntity.ok(unitMapper.mapToDTO(unitService.modifyUnit(unitDTO)));
     }
 
 }
