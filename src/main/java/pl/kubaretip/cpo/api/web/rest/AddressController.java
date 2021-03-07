@@ -2,14 +2,15 @@ package pl.kubaretip.cpo.api.web.rest;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.kubaretip.cpo.api.constants.AuthoritiesConstants;
 import pl.kubaretip.cpo.api.dto.AddressDTO;
 import pl.kubaretip.cpo.api.dto.mapper.AddressMapper;
 import pl.kubaretip.cpo.api.service.AddressService;
+import pl.kubaretip.cpo.api.util.ExceptionUtils;
+import pl.kubaretip.cpo.api.web.rest.request.UpdateAddressRequest;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/addresses")
@@ -17,11 +18,14 @@ public class AddressController {
 
     private final AddressService addressService;
     private final AddressMapper addressMapper;
+    private final ExceptionUtils exceptionUtils;
 
     public AddressController(AddressService addressService,
-                             AddressMapper addressMapper) {
+                             AddressMapper addressMapper,
+                             ExceptionUtils exceptionUtils) {
         this.addressService = addressService;
         this.addressMapper = addressMapper;
+        this.exceptionUtils = exceptionUtils;
     }
 
     @Secured(AuthoritiesConstants.Code.USER)
@@ -31,5 +35,15 @@ public class AddressController {
                 .body(addressMapper.mapToDTO(addressService.findAddressById(addressId)));
     }
 
+    @Secured({AuthoritiesConstants.Code.MARKETER})
+    @PutMapping("/{id}")
+    public ResponseEntity<AddressDTO> updateAddressById(@PathVariable("id") long addressId,
+                                                        @Valid @RequestBody UpdateAddressRequest request) {
+        if (request.getId() != addressId) {
+            throw exceptionUtils.pathIdNotEqualsBodyId();
+        }
+        var address = addressService.updateAddressById(addressMapper.mapUpdateAddressRequestToAddressDTO(request));
+        return ResponseEntity.ok(addressMapper.mapToDTO(address));
+    }
 
 }

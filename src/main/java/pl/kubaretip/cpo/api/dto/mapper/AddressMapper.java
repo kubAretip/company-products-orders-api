@@ -4,6 +4,7 @@ import org.mapstruct.*;
 import pl.kubaretip.cpo.api.domain.Address;
 import pl.kubaretip.cpo.api.dto.AddressDTO;
 import pl.kubaretip.cpo.api.web.rest.request.AddressRequest;
+import pl.kubaretip.cpo.api.web.rest.request.UpdateAddressRequest;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,6 +22,8 @@ public interface AddressMapper {
     @Named("mapToAddressDTOOnlyWithId")
     @Mapping(target = "id", source = "deliveryAddressId")
     AddressDTO mapToAddressDTOOnlyWithId(Long deliveryAddressId);
+
+    AddressDTO mapUpdateAddressRequestToAddressDTO(UpdateAddressRequest request);
 
     @Named("mapAddressRequestToAddressDTOList")
     default List<AddressDTO> mapAddressRequestToAddressDTOList(AddressRequest request) {
