@@ -3,7 +3,6 @@ package pl.kubaretip.cpo.api.web.rest.request;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.kubaretip.cpo.api.dto.CountryCallingCodeDTO;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -26,9 +25,5 @@ public class NewCountryCallingCodeRequest {
     @NotBlank(message = "{validation.phoneCountryCode.code.notBlank}")
     @Pattern(regexp = COUNTRY_CALLING_CODE_REGEXP, message = "{validation.phoneCountryCode.code.pattern}")
     private String code;
-
-    public CountryCallingCodeDTO toDTO() {
-        return new CountryCallingCodeDTO(this.country, this.code);
-    }
 
 }

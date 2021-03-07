@@ -30,7 +30,7 @@ public class ClientController {
     @PostMapping
     public ResponseEntity<ClientDTO> createClient(@Valid @RequestBody NewClientRequest request,
                                                   UriComponentsBuilder uriComponentsBuilder) {
-        var client = clientService.createClient(request.toDTO());
+        var client = clientService.createClient(clientMapper.mapNewClientRequestToClientDTO(request));
         var locationURI = uriComponentsBuilder.path("/clients/{id}")
                 .buildAndExpand(client.getId()).toUri();
         return ResponseEntity.created(locationURI).body(clientMapper.mapToDTO(client));
@@ -40,7 +40,7 @@ public class ClientController {
     @PutMapping("/{id}")
     public ResponseEntity<ClientDTO> modifyClientInformation(@PathVariable("id") long clientId,
                                                              @Valid @RequestBody ClientRequest request) {
-        var client = clientService.modifyClient(clientId, request.toDTO());
+        var client = clientService.modifyClient(clientId, clientMapper.mapClientRequestToClientDTO(request));
         return ResponseEntity.ok().body(clientMapper.mapToDTO(client));
     }
 

@@ -3,7 +3,6 @@ package pl.kubaretip.cpo.api.web.rest.request;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.kubaretip.cpo.api.dto.ClientDTO;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -34,19 +33,6 @@ public class ClientRequest {
     @NotBlank(message = "{validation.client.phoneNumber.notBlank}")
     @Size(min = 7, max = 20, message = "{validation.client.phoneNumber.size}")
     protected String phoneNumber;
-
-
-    public ClientDTO toDTO() {
-        var clientDTO = new ClientDTO();
-
-        clientDTO.setCompanyName(this.companyName);
-        clientDTO.setFirstName(this.firstName);
-        clientDTO.setLastName(this.lastName);
-        clientDTO.setEmail(this.email);
-        clientDTO.setPhoneNumber(phoneNumber);
-
-        return clientDTO;
-    }
 
 
 }
