@@ -5,25 +5,20 @@ import pl.kubaretip.cpo.api.domain.Authority;
 import pl.kubaretip.cpo.api.exception.NotFoundException;
 import pl.kubaretip.cpo.api.repository.AuthorityRepository;
 import pl.kubaretip.cpo.api.service.AuthorityService;
-import pl.kubaretip.cpo.api.util.Translator;
 
 @Service
 public class AuthorityServiceImpl implements AuthorityService {
 
     private final AuthorityRepository authorityRepository;
-    private final Translator translator;
 
-    public AuthorityServiceImpl(AuthorityRepository authorityRepository,
-                                Translator translator) {
+    public AuthorityServiceImpl(AuthorityRepository authorityRepository) {
         this.authorityRepository = authorityRepository;
-        this.translator = translator;
     }
 
     @Override
     public Authority getAuthority(String role) {
         return authorityRepository.findByNameOrViewNameIgnoreCase(role)
-                .orElseThrow(() -> new NotFoundException(translator.translate("common.notFound.title"),
-                        translator.translate("authority.notFound.message", new Object[]{role})));
+                .orElseThrow(() -> new NotFoundException("exception.authority.notFound", new Object[]{role}));
     }
 
 }

@@ -8,18 +8,14 @@ import pl.kubaretip.cpo.api.exception.AlreadyExistsException;
 import pl.kubaretip.cpo.api.exception.NotFoundException;
 import pl.kubaretip.cpo.api.repository.UnitRepository;
 import pl.kubaretip.cpo.api.service.UnitService;
-import pl.kubaretip.cpo.api.util.Translator;
 
 @Service
 public class UnitServiceImpl implements UnitService {
 
     private final UnitRepository unitRepository;
-    private final Translator translator;
 
-    public UnitServiceImpl(UnitRepository unitRepository,
-                           Translator translator) {
+    public UnitServiceImpl(UnitRepository unitRepository) {
         this.unitRepository = unitRepository;
-        this.translator = translator;
     }
 
     @Override
@@ -78,18 +74,15 @@ public class UnitServiceImpl implements UnitService {
     }
 
     private AlreadyExistsException unitWithNameAlreadyExists(String name) {
-        return new AlreadyExistsException(translator.translate("common.alreadyExists.title"),
-                translator.translate("unit.alreadyExists.name.message", new Object[]{name}));
+        return new AlreadyExistsException("exception.unit.alreadyExists.name", new Object[]{name});
     }
 
     private AlreadyExistsException unitWithSymbolAlreadyExists(String symbol) {
-        return new AlreadyExistsException(translator.translate("common.alreadyExists.title"),
-                translator.translate("unit.alreadyExists.symbol.message", new Object[]{symbol}));
+        return new AlreadyExistsException("exception.unit.alreadyExists.symbol", new Object[]{symbol});
     }
 
     private NotFoundException unitWithIdNotFound(long unitId) {
-        return new NotFoundException(translator.translate("common.notFound.title"),
-                translator.translate("unit.notFound.id.message", new Object[]{unitId}));
+        return new NotFoundException("exception.unit.notFound", new Object[]{unitId});
     }
 
 }

@@ -23,8 +23,8 @@ public class SecurityExceptionHandler {
     public Error handleInvalidLoginRequest(InvalidLoginRequestException ex, WebRequest webRequest) {
         return Error.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
-                .detail(translator.translate("common.invalidLoginRequest.message"))
-                .title(translator.translate("common.invalidLoginRequest.title"))
+                .title(translator.translate("security.badRequest.title"))
+                .detail(translator.translate("security.badRequest.message"))
                 .build();
     }
 

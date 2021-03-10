@@ -20,14 +20,11 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryService categoryService;
-    private final ExceptionUtils exceptionUtils;
     private final CategoryMapper categoryMapper;
 
     public CategoryController(CategoryService categoryService,
-                              ExceptionUtils exceptionUtils,
                               CategoryMapper categoryMapper) {
         this.categoryService = categoryService;
-        this.exceptionUtils = exceptionUtils;
         this.categoryMapper = categoryMapper;
     }
 
@@ -65,7 +62,7 @@ public class CategoryController {
     public ResponseEntity<CategoryDTO> editCategory(@PathVariable("id") long categoryId,
                                                     @Valid @RequestBody EditCategoryRequest request) {
         if (request.getId() != categoryId) {
-            throw exceptionUtils.pathIdNotEqualsBodyId();
+            throw ExceptionUtils.invalidRequestId();
         }
         var resultCategory = categoryService.modifyCategory(categoryMapper.mapEditCategoryRequestToCategoryDTO(request));
         return ResponseEntity.ok(categoryMapper.mapToDTO(resultCategory));

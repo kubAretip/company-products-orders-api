@@ -41,8 +41,7 @@ public class UserActivationReportServiceImpl implements UserActivationReportServ
     @Override
     public UserActivationReport getUserActivationReport(long userId) {
         return userActivationReportRepository.findByUserId(userId)
-                .orElseThrow(() -> new NotFoundException(translator.translate("common.notFound.title"),
-                        translator.translate("userActivationReport.notFound", new Object[]{userId})));
+                .orElseThrow(() -> new NotFoundException("exception.userActivationReport.notFound", new Object[]{userId}));
     }
 
     public byte[] generateUserActivationReport(User user, String activationKey) throws DocumentException {

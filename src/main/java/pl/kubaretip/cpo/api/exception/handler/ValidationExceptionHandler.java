@@ -50,7 +50,7 @@ public class ValidationExceptionHandler extends ResponseEntityExceptionHandler {
                 .badRequest()
                 .body(Error.builder()
                         .status(HttpStatus.BAD_REQUEST.value())
-                        .title(translator.translate("common.invalidData.title"))
+                        .title(translator.translate("error.title.badRequest"))
                         .validationErrors(validationErrors)
                         .build()
                 );

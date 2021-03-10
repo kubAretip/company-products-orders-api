@@ -19,14 +19,11 @@ import javax.validation.Valid;
 public class UnitController {
 
     private final UnitService unitService;
-    private final ExceptionUtils exceptionUtils;
     private final UnitMapper unitMapper;
 
     public UnitController(UnitService unitService,
-                          ExceptionUtils exceptionUtils,
                           UnitMapper unitMapper) {
         this.unitService = unitService;
-        this.exceptionUtils = exceptionUtils;
         this.unitMapper = unitMapper;
     }
 
@@ -52,7 +49,7 @@ public class UnitController {
     @PatchMapping(path = "/{id}")
     public ResponseEntity<UnitDTO> editUnit(@PathVariable("id") long unitId, @Valid @RequestBody EditUnitRequest request) {
         if (request.getId() != unitId) {
-            throw exceptionUtils.pathIdNotEqualsBodyId();
+            throw ExceptionUtils.invalidRequestId();
         }
         var unitDTO = unitMapper.mapEditUnitRequestToUnitDTO(request);
         return ResponseEntity.ok(unitMapper.mapToDTO(unitService.modifyUnit(unitDTO)));

@@ -15,7 +15,6 @@ import pl.kubaretip.cpo.api.exception.NotFoundException;
 import pl.kubaretip.cpo.api.exception.OrderStatusException;
 import pl.kubaretip.cpo.api.repository.OrderRepository;
 import pl.kubaretip.cpo.api.service.*;
-import pl.kubaretip.cpo.api.util.Translator;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,20 +30,17 @@ public class OrderServiceImpl implements OrderService {
     private final ClientService clientService;
     private final ProductService productService;
     private final OrderRepository orderRepository;
-    private final Translator translator;
 
     public OrderServiceImpl(UserService userService,
                             ClientService clientService,
                             OrderStatusService orderStatusService,
                             ProductService productService,
-                            OrderRepository orderRepository,
-                            Translator translator) {
+                            OrderRepository orderRepository) {
         this.userService = userService;
         this.clientService = clientService;
         this.orderStatusService = orderStatusService;
         this.productService = productService;
         this.orderRepository = orderRepository;
-        this.translator = translator;
     }
 
     @Override
@@ -58,8 +54,7 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toList());
 
         if (!productService.existsProductsWithIds(productsIds)) {
-            throw new NotFoundException(translator.translate("common.notFound.title"),
-                    translator.translate("order.incorrect.productsList"));
+            throw new NotFoundException("exception.order.incorrect.productsList");
         }
 
         var client = clientService.findClientById(orderDTO.getClient().getId());
@@ -82,8 +77,7 @@ public class OrderServiceImpl implements OrderService {
                 .stream()
                 .filter(address -> address.getId().equals(orderDTO.getDeliveryAddress().getId()) && !address.isDeleted())
                 .findFirst()
-                .orElseThrow(() -> new NotFoundException(translator.translate("common.notFound.title"),
-                        translator.translate("client.notFound.address")));
+                .orElseThrow(() -> new NotFoundException("exception.client.notFound.address"));
 
         newOrder.setDeliveryAddress(deliveryAddress);
         newOrder.setMarketer(userService.findUserByIdAndAuthority(marketerId, AuthoritiesConstants.ROLE_MARKETER));
@@ -108,10 +102,8 @@ public class OrderServiceImpl implements OrderService {
                             .stream()
                             .filter(opDTO -> orderProduct.getId().equals(opDTO.getId()))
                             .findFirst()
-                            .orElseThrow(() -> new InvalidDataException("common.badRequest.title",
-                                    translator.translate("order.missingOrderProductExecutor",
-                                            new Object[]{orderProduct.getId()}))
-                            );
+                            .orElseThrow(() -> new InvalidDataException("exception.order.missingOrderProductExecutor",
+                                    new Object[]{orderProduct.getId()}));
 
                     orderProduct.setExecutor(userService.findUserByIdAndAuthority(orderProductDTO.getExecutor().getId(),
                             AuthoritiesConstants.ROLE_EXECUTOR));
@@ -144,20 +136,17 @@ public class OrderServiceImpl implements OrderService {
 
     void throwExceptionIfAlreadyAcceptedOrRejected(Order order) {
         if (isOrderAlreadyAccepted(order)) {
-            throw new OrderStatusException(translator.translate("common.badRequest.title"),
-                    translator.translate("order.already.accepted"));
+            throw new OrderStatusException("exception.order.already.accepted");
         }
         if (isOrderAlreadyRejected(order)) {
-            throw new OrderStatusException(translator.translate("common.badRequest.title"),
-                    translator.translate("order.already.rejected"));
+            throw new OrderStatusException("exception.order.already.rejected");
         }
     }
 
     @Override
     public Order getOrderById(long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(() -> new NotFoundException(translator.translate("common.notFound.title"),
-                        translator.translate("order.notFound", new Object[]{orderId})));
+                .orElseThrow(() -> new NotFoundException("exception.order.notFound", new Object[]{orderId}));
     }
 
     boolean isOrderAlreadyAccepted(Order order) {

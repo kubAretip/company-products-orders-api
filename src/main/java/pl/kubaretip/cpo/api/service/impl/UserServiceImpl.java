@@ -14,7 +14,6 @@ import pl.kubaretip.cpo.api.service.AuthorityService;
 import pl.kubaretip.cpo.api.service.UserActivationService;
 import pl.kubaretip.cpo.api.service.UserService;
 import pl.kubaretip.cpo.api.util.SecurityUtils;
-import pl.kubaretip.cpo.api.util.Translator;
 
 import static pl.kubaretip.cpo.api.constants.AppConstants.USER_ACTIVATION_KEY_LENGTH;
 
@@ -24,18 +23,15 @@ class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final Translator translator;
     private final AuthorityService authorityService;
     private final UserActivationService userActivationService;
 
     public UserServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder,
-                           Translator translator,
                            AuthorityService authorityService,
                            UserActivationService userActivationService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.translator = translator;
         this.authorityService = authorityService;
         this.userActivationService = userActivationService;
     }
@@ -53,7 +49,7 @@ class UserServiceImpl implements UserService {
             var employeeAuthority = authorityService.getAuthority(AuthoritiesConstants.ROLE_USER.name());
             user.getAuthorities().add(employeeAuthority);
         } catch (NotFoundException ex) {
-            throw new AuthorityNotExistsException(translator.translate("authority.error.message"));
+            throw new AuthorityNotExistsException("exception.authority.error");
         }
 
         var activationKey = RandomStringUtils.randomNumeric(USER_ACTIVATION_KEY_LENGTH);
@@ -84,7 +80,7 @@ class UserServiceImpl implements UserService {
 
         var accountCreatedByModerator = SecurityUtils.getCurrentUserLogin()
                 .flatMap(userRepository::findByUsernameIgnoreCase)
-                .orElseThrow(() -> new UserResourceException(translator.translate("user.notFound.userResource")));
+                .orElseThrow(() -> new UserResourceException("exception.user.notFound.userResource"));
         userActivationService.sendUserActivationMail(user, activationKey, accountCreatedByModerator);
         return user;
     }
@@ -96,8 +92,7 @@ class UserServiceImpl implements UserService {
                 .orElseThrow(() -> userNotFound(username));
 
         if (user.getActivated()) {
-            throw new InvalidDataException(translator.translate("user.alreadyActivated.title"),
-                    translator.translate("user.alreadyActivated.message"));
+            throw new InvalidDataException("exception.user.alreadyActivated");
         }
 
         if (passwordEncoder.matches(activationKey, user.getActivationKey())) {
@@ -107,8 +102,7 @@ class UserServiceImpl implements UserService {
             userRepository.save(user);
             return user;
         } else {
-            throw new InvalidDataException(translator.translate("user.alreadyActivated.title"),
-                    translator.translate("user.incorrect.activationKey.message"));
+            throw new InvalidDataException("exception.user.incorrect.activationKey");
         }
     }
 
@@ -125,8 +119,7 @@ class UserServiceImpl implements UserService {
         var authority = authorityService.getAuthority(role);
 
         if (authority.getName().equals(AuthoritiesConstants.ROLE_USER.name()))
-            throw new InvalidDataException(translator.translate("common.actionNotAllowed.title"),
-                    translator.translate("user.notAllowed.removeBaseAuthority.message"));
+            throw new InvalidDataException("exception.user.notAllowed.removeBaseAuthority");
 
         user.getAuthorities().remove(authority);
         userRepository.save(user);
@@ -142,26 +135,21 @@ class UserServiceImpl implements UserService {
     @Override
     public User findUserByIdAndAuthority(long userId, AuthoritiesConstants authority) {
         return userRepository.findUserByUsernameAndAuthority(userId, authority.name())
-                .orElseThrow(() -> new NotFoundException(translator.translate("user.notFound.title"),
-                        translator.translate("user.notFound.id.authority",
-                                new String[]{String.valueOf(userId), authority.name()})
-                ));
+                .orElseThrow(() -> new NotFoundException("exception.user.notFound.id.authority",
+                        new String[]{String.valueOf(userId), authority.name()}));
     }
 
     private NotFoundException userNotFound(String username) {
-        return new NotFoundException(translator.translate("user.notFound.title"),
-                translator.translate("user.notFound.username.message", new Object[]{username}));
+        return new NotFoundException("exception.user.notFound.username.message", new Object[]{username});
     }
 
     private NotFoundException userNotFound(long userId) {
-        return new NotFoundException(translator.translate("user.notFound.title"),
-                translator.translate("user.notFound.id.message", new Object[]{userId}));
+        return new NotFoundException("exception.user.notFound.id.message", new Object[]{userId});
     }
 
     void throwExceptionWhenUserWithEmailAlreadyExists(String email) {
         if (userRepository.existsByEmailIgnoreCase(email)) {
-            throw new AlreadyExistsException(translator.translate("user.alreadyInUse.email.title"),
-                    translator.translate("user.alreadyInUse.email.message", new Object[]{email}));
+            throw new AlreadyExistsException("exception.user.alreadyExists.email", new Object[]{email});
         }
     }
 

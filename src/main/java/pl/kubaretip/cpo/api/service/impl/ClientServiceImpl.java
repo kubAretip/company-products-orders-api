@@ -9,20 +9,16 @@ import pl.kubaretip.cpo.api.exception.AlreadyExistsException;
 import pl.kubaretip.cpo.api.exception.NotFoundException;
 import pl.kubaretip.cpo.api.repository.ClientRepository;
 import pl.kubaretip.cpo.api.service.ClientService;
-import pl.kubaretip.cpo.api.util.Translator;
 
 @Service
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
-    private final Translator translator;
     private final AddressMapper addressMapper;
 
     public ClientServiceImpl(ClientRepository clientRepository,
-                             Translator translator,
                              AddressMapper addressMapper) {
         this.clientRepository = clientRepository;
-        this.translator = translator;
         this.addressMapper = addressMapper;
     }
 
@@ -31,18 +27,15 @@ public class ClientServiceImpl implements ClientService {
     public Client createClient(ClientDTO clientDTO) {
 
         if (clientRepository.existsByCompanyNameIgnoreCase(clientDTO.getCompanyName())) {
-            throw new AlreadyExistsException(translator.translate("common.alreadyExists.title"),
-                    translator.translate("client.alreadyExists.companyName", new Object[]{clientDTO.getCompanyName()}));
+            throw new AlreadyExistsException("exception.client.alreadyExists.companyName", new Object[]{clientDTO.getCompanyName()});
         }
 
         if (clientRepository.existsByEmailIgnoreCase(clientDTO.getEmail())) {
-            throw new AlreadyExistsException(translator.translate("common.alreadyExists.title"),
-                    translator.translate("client.alreadyExists.email", new Object[]{clientDTO.getEmail()}));
+            throw new AlreadyExistsException("exception.client.alreadyExists.email", new Object[]{clientDTO.getEmail()});
         }
 
         if (clientRepository.existsByPhoneNumberIgnoreCase(clientDTO.getPhoneNumber())) {
-            throw new AlreadyExistsException(translator.translate("common.alreadyExists.title"),
-                    translator.translate("client.alreadyExists.phoneNumber", new Object[]{clientDTO.getPhoneNumber()}));
+            throw new AlreadyExistsException("exception.client.alreadyExists.phoneNumber", new Object[]{clientDTO.getPhoneNumber()});
         }
 
         var client = new Client();
@@ -67,8 +60,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Client findClientById(long id) {
         return clientRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(translator.translate("common.notFound.title"),
-                        translator.translate("client.notfound", new Object[]{id})));
+                .orElseThrow(() -> new NotFoundException("exception.client.notFound", new Object[]{id}));
     }
 
     @Override

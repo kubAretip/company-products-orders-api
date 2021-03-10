@@ -34,8 +34,8 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         var out = response.getWriter();
         var error = Error.builder()
                 .status(HttpStatus.FORBIDDEN.value())
-                .title(translator.translate("common.forbidden.title"))
-                .detail(translator.translate("common.forbidden.message"))
+                .title(translator.translate("security.forbidden.title"))
+                .detail(translator.translate("security.forbidden.message"))
                 .build();
 
         var jsonErrorResponse = objectMapper.writeValueAsString(error);

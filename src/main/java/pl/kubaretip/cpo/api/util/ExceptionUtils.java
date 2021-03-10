@@ -1,21 +1,11 @@
 package pl.kubaretip.cpo.api.util;
 
-import org.springframework.stereotype.Component;
 import pl.kubaretip.cpo.api.exception.InvalidDataException;
 
-@Component
-public class ExceptionUtils {
+public final class ExceptionUtils {
 
-    private final Translator translator;
-
-    public ExceptionUtils(Translator translator) {
-        this.translator = translator;
+    public static InvalidDataException invalidRequestId() {
+        return new InvalidDataException("exception.invalid.id");
     }
-
-    public InvalidDataException pathIdNotEqualsBodyId() {
-        return new InvalidDataException(translator.translate("common.badRequest.title"),
-                translator.translate("common.pathIdNotEqualsBodyId.message"));
-    }
-
 
 }

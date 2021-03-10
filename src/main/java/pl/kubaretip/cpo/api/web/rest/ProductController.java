@@ -20,14 +20,11 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
-    private final ExceptionUtils exceptionUtils;
     private final ProductMapper productMapper;
 
     public ProductController(ProductService productService,
-                             ExceptionUtils exceptionUtils,
                              ProductMapper productMapper) {
         this.productService = productService;
-        this.exceptionUtils = exceptionUtils;
         this.productMapper = productMapper;
     }
 
@@ -59,7 +56,7 @@ public class ProductController {
     public ResponseEntity<ProductDTO> modifyProducts(@PathVariable("id") long productId,
                                                      @Valid @RequestBody EditProductRequest request) {
         if (productId != request.getId()) {
-            throw exceptionUtils.pathIdNotEqualsBodyId();
+            throw ExceptionUtils.invalidRequestId();
         }
         var productDTO = productMapper.mapEditProductRequestToProductDTO(request);
         var product = productService.modifyProduct(productDTO);

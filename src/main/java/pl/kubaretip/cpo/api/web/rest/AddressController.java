@@ -18,14 +18,11 @@ public class AddressController {
 
     private final AddressService addressService;
     private final AddressMapper addressMapper;
-    private final ExceptionUtils exceptionUtils;
 
     public AddressController(AddressService addressService,
-                             AddressMapper addressMapper,
-                             ExceptionUtils exceptionUtils) {
+                             AddressMapper addressMapper) {
         this.addressService = addressService;
         this.addressMapper = addressMapper;
-        this.exceptionUtils = exceptionUtils;
     }
 
     @Secured(AuthoritiesConstants.Code.USER)
@@ -40,7 +37,7 @@ public class AddressController {
     public ResponseEntity<AddressDTO> updateAddressById(@PathVariable("id") long addressId,
                                                         @Valid @RequestBody UpdateAddressRequest request) {
         if (request.getId() != addressId) {
-            throw exceptionUtils.pathIdNotEqualsBodyId();
+            throw ExceptionUtils.invalidRequestId();
         }
         var address = addressService.updateAddressById(addressMapper.mapUpdateAddressRequestToAddressDTO(request));
         return ResponseEntity.ok(addressMapper.mapToDTO(address));

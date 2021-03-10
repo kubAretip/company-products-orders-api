@@ -8,7 +8,6 @@ import pl.kubaretip.cpo.api.exception.AlreadyExistsException;
 import pl.kubaretip.cpo.api.exception.NotFoundException;
 import pl.kubaretip.cpo.api.repository.CategoryRepository;
 import pl.kubaretip.cpo.api.service.CategoryService;
-import pl.kubaretip.cpo.api.util.Translator;
 
 import java.util.List;
 
@@ -16,12 +15,9 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final Translator translator;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository,
-                               Translator translator) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
-        this.translator = translator;
     }
 
     @Override
@@ -32,8 +28,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category getCategoryById(long categoryId) {
         return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NotFoundException(translator.translate("common.notFound.title"),
-                        translator.translate("category.notFound.id.message", new Object[]{categoryId})));
+                .orElseThrow(() -> new NotFoundException("exception.category.notFound", new Object[]{categoryId}));
     }
 
     @Override
@@ -76,8 +71,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private AlreadyExistsException categoryWithNameAlreadyExists(String categoryName) {
-        return new AlreadyExistsException(translator.translate("category.alreadyExists.title"),
-                translator.translate("category.alreadyExists.name.message", new Object[]{categoryName}));
+        return new AlreadyExistsException("exception.category.alreadyExists.name", new Object[]{categoryName});
     }
 
 }

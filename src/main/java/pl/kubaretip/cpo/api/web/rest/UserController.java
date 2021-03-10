@@ -22,14 +22,11 @@ public class UserController {
 
     private final UserService userService;
     private final UserMapper userMapper;
-    private final ExceptionUtils exceptionUtils;
 
     public UserController(UserService userService,
-                          UserMapper userMapper,
-                          ExceptionUtils exceptionUtils) {
+                          UserMapper userMapper) {
         this.userService = userService;
         this.userMapper = userMapper;
-        this.exceptionUtils = exceptionUtils;
     }
 
     @Secured(AuthoritiesConstants.Code.MODERATOR)
@@ -55,7 +52,7 @@ public class UserController {
     public ResponseEntity<Void> assignUserToAuthority(@PathVariable("id") Long userId,
                                                       @Valid @RequestBody UserAuthorityRequest request) {
         if (!userId.equals(request.getUserId())) {
-            throw exceptionUtils.pathIdNotEqualsBodyId();
+            throw ExceptionUtils.invalidRequestId();
         }
         userService.assignUserToNewAuthority(request.getUserId(), request.getAuthorityName());
         return ResponseEntity.noContent().build();
@@ -66,7 +63,7 @@ public class UserController {
     public ResponseEntity<Void> removeUserAuthority(@PathVariable("id") Long userId,
                                                     @Valid @RequestBody UserAuthorityRequest request) {
         if (!userId.equals(request.getUserId())) {
-            throw exceptionUtils.pathIdNotEqualsBodyId();
+            throw ExceptionUtils.invalidRequestId();
         }
         userService.removeUserAuthority(request.getUserId(), request.getAuthorityName());
         return ResponseEntity.noContent().build();
@@ -92,7 +89,7 @@ public class UserController {
     public ResponseEntity<UserDTO> updateUserById(@PathVariable("id") Long userId,
                                                   @Valid @RequestBody UpdateUserRequest request) {
         if (!userId.equals(request.getId())) {
-            throw exceptionUtils.pathIdNotEqualsBodyId();
+            throw ExceptionUtils.invalidRequestId();
         }
         var userDTO = userMapper.mapUpdateUserRequestToUserDTO(request);
         return ResponseEntity.ok(userMapper.mapToDTO(userService.updateUser(userDTO)));

@@ -24,14 +24,11 @@ public class OrderController {
 
     private final OrderService orderService;
     private final OrderMapper orderMapper;
-    private final ExceptionUtils exceptionUtils;
 
     public OrderController(OrderService orderService,
-                           OrderMapper orderMapper,
-                           ExceptionUtils exceptionUtils) {
+                           OrderMapper orderMapper) {
         this.orderService = orderService;
         this.orderMapper = orderMapper;
-        this.exceptionUtils = exceptionUtils;
     }
 
     @Secured(AuthoritiesConstants.Code.MARKETER)
@@ -53,7 +50,7 @@ public class OrderController {
                                             Authentication authentication) {
 
         if (orderId != request.getId()) {
-            throw exceptionUtils.pathIdNotEqualsBodyId();
+            throw ExceptionUtils.invalidRequestId();
         }
 
         orderService.acceptOrder(orderMapper.mapAcceptOrderRequestToOrderDTO(request),
@@ -67,7 +64,7 @@ public class OrderController {
                                             @Valid @RequestBody RejectOrderRequest request,
                                             Authentication authentication) {
         if (orderId != request.getId()) {
-            throw exceptionUtils.pathIdNotEqualsBodyId();
+            throw ExceptionUtils.invalidRequestId();
         }
         var orderDTO = orderMapper.mapRejectOrderRequestToOrderDTO(request);
         orderService.rejectOrder(orderDTO, SecurityUtils.principal(authentication.getPrincipal()).getId());

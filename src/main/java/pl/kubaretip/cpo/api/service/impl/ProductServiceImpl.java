@@ -9,7 +9,6 @@ import pl.kubaretip.cpo.api.repository.ProductRepository;
 import pl.kubaretip.cpo.api.service.CategoryService;
 import pl.kubaretip.cpo.api.service.ProductService;
 import pl.kubaretip.cpo.api.service.UnitService;
-import pl.kubaretip.cpo.api.util.Translator;
 
 import java.util.List;
 
@@ -19,16 +18,13 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
     private final UnitService unitService;
-    private final Translator translator;
 
     public ProductServiceImpl(ProductRepository productRepository,
                               CategoryService categoryService,
-                              UnitService unitService,
-                              Translator translator) {
+                              UnitService unitService) {
         this.productRepository = productRepository;
         this.categoryService = categoryService;
         this.unitService = unitService;
-        this.translator = translator;
     }
 
     @Override
@@ -96,13 +92,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private AlreadyExistsException productWithNameAlreadyExists(String name) {
-        return new AlreadyExistsException(translator.translate("common.alreadyExists.title"),
-                translator.translate("product.alreadyExists.name.message", new Object[]{name}));
+        return new AlreadyExistsException("exception.product.alreadyExists.name", new Object[]{name});
     }
 
     private NotFoundException productWithIdNotFound(long productId) {
-        return new NotFoundException(translator.translate("common.notFound.title"),
-                translator.translate("product.notFound.id.message", new Object[]{productId}));
+        return new NotFoundException("exception.product.notFound", new Object[]{productId});
     }
 
 }
