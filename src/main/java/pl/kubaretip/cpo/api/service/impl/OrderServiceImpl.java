@@ -184,7 +184,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getOrders(int from, int to) {
-        return orderRepository.findAllWithPageable(PageRequest.of(from, to));
+        return orderRepository.findAll(PageRequest.of(from, to)).toList();
     }
 
 
