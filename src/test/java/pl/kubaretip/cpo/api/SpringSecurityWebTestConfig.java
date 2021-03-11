@@ -20,8 +20,8 @@ import static org.mockito.Mockito.mock;
 @TestConfiguration
 public class SpringSecurityWebTestConfig {
 
-    public static final String MODERATOR_USER = "marketer";
-    public static final String MARKETER_USER = "moderator";
+    public static final String MODERATOR_USER = "moderator";
+    public static final String MARKETER_USER = "marketer";
 
     @Bean
     @Primary
