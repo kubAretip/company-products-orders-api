@@ -35,6 +35,8 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static pl.kubaretip.cpo.api.SpringSecurityWebTestConfig.MARKETER_USER;
+import static pl.kubaretip.cpo.api.SpringSecurityWebTestConfig.MODERATOR_USER;
 
 @WebMvcTest(controllers = AddressController.class)
 @ContextConfiguration(classes = {SpringSecurityWebTestConfig.class, JWTUtilTestConfig.class, TranslatorTestConfig.class})
@@ -87,7 +89,7 @@ public class AddressControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @WithUserDetails(userDetailsServiceBeanName = "customUserDetailsService", value = "testUser")
+    @WithUserDetails(userDetailsServiceBeanName = "testUserDetailsService", value = MODERATOR_USER)
     @ParameterizedTest
     @MethodSource("invalidAddresses")
     public void shouldReturns400WhenUpdateAddressWithIncorrectInput(UpdateAddressRequest data) throws Exception {
@@ -118,7 +120,7 @@ public class AddressControllerTest {
         );
     }
 
-    @WithUserDetails(userDetailsServiceBeanName = "customUserDetailsService", value = "testUser")
+    @WithUserDetails(userDetailsServiceBeanName = "testUserDetailsService", value = MARKETER_USER)
     @Test
     public void shouldReturns204WhenUpdateAddressWithCorrectInput() throws Exception {
 
@@ -131,7 +133,9 @@ public class AddressControllerTest {
         updateAddressRequest.setStreet("test");
         updateAddressRequest.setCity("test");
         updateAddressRequest.setCountry("test");
+        given(addressMapper.mapUpdateAddressRequestToAddressDTO(any(UpdateAddressRequest.class))).willReturn(new AddressDTO());
         given(addressService.updateAddressById(any(AddressDTO.class))).willReturn(new Address());
+        given(addressMapper.mapToDTO(any(Address.class))).willReturn(new AddressDTO());
 
         // when
         var request = put("/addresses/{id}", 1)
@@ -143,7 +147,7 @@ public class AddressControllerTest {
         verify(addressService, times(1)).updateAddressById(any(AddressDTO.class));
     }
 
-    @WithUserDetails(userDetailsServiceBeanName = "customUserDetailsService", value = "testUser")
+    @WithUserDetails(userDetailsServiceBeanName = "testUserDetailsService", value = MARKETER_USER)
     @Test
     public void shouldReturns204WhenMarkAddressAsDeleted() throws Exception {
 
@@ -158,7 +162,7 @@ public class AddressControllerTest {
         verify(addressService, times(1)).markAddressAsDeleted(1);
     }
 
-    @WithUserDetails(userDetailsServiceBeanName = "customUserDetailsService", value = "testUser")
+    @WithUserDetails(userDetailsServiceBeanName = "testUserDetailsService", value = MARKETER_USER)
     @Test
     public void shouldReturns404WhenMarkAddressAsDeleted() throws Exception {
 
@@ -172,9 +176,6 @@ public class AddressControllerTest {
         mockMvc.perform(request).andExpect(status().isNoContent());
         verify(addressService, times(1)).markAddressAsDeleted(1);
     }
-
-
-
 
 
 }
