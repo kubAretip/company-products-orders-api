@@ -1,0 +1,8 @@
+pl\kubaretip\cpo\api\service\impl\AddressServiceImplTest.class
+pl\kubaretip\cpo\api\web\rest\AddressControllerTest.class
+pl\kubaretip\cpo\api\JWTUtilTestConfig.class
+pl\kubaretip\cpo\api\service\impl\CategoryServiceImplTest.class
+pl\kubaretip\cpo\api\web\rest\CategoryControllerTest.class
+pl\kubaretip\cpo\api\service\impl\AuthorityServiceImplTest.class
+pl\kubaretip\cpo\api\SpringSecurityWebTestConfig.class
+pl\kubaretip\cpo\api\TranslatorTestConfig.class

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<div>
+    <h2 th:text="#{mail.userActivation.subject}"></h2>
+    <br>
+    <span>
+            <strong th:text="#{mail.userActivation.greeting} + ' '+${user.getFirstName()}">
+            </strong>
+    </span> <br>
+    <span th:text="#{mail.userActivation.explanation}"></span> <br>
+    <span th:text="#{mail.userActivation.accountInfo}"></span> <br>
+    <span th:text="#{mail.userActivation.firstAndLastName} + ': ' + ${user.getFirstName()} + ' ' +${user.getLastName()}"></span>
+    <br>
+    <span th:text="#{mail.userActivation.username} + ': ' + ${user.getUsername()}"></span> <br>
+    <span th:text="#{mail.userActivation.activationKey} + ': '"></span><span><b th:text="${key}"></b></span><br>
+    <hr>
+    <br>
+    <span th:text="#{mail.userActivation.help}"></span> <br>
+    <span th:text="${help.getFirstName()} + ' ' + ${help.getLastName()}"></span><br>
+    <span th:text="${help.getEmail()}"></span>
+</div>
+</body>
+</html>

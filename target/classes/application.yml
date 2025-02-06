@@ -1,0 +1,13 @@
+server:
+  servlet:
+    context-path: /api
+spring:
+  profiles:
+    active: dev
+  task:
+    execution:
+      thread-name-prefix: cpo-api-task-
+      pool:
+        core-size: 2
+        max-size: 25
+        queue-capacity: 10000
